@@ -7,5 +7,3 @@ if ($controller) {
  $controller->executeAction();
  $controller->returnView();
 }
-
-echo 'finished.';
