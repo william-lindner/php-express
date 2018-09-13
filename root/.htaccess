@@ -2,11 +2,11 @@
     Options +FollowSymLinks
     RewriteEngine On
 
-    ErrorDocument 404 index.php
-    ErrorDocument 500 index.php
+    # ErrorDocument 404 index.php
+    # ErrorDocument 500 index.php
 
     RewriteCond %{REQUEST_URI} !-f
     RewriteCond %{REQUEST_URI} !-d
     RewriteCond %{REQUEST_URI} !-l
-    RewriteRule ^(.*[^js|^css])$ index.php?url=$1 [QSA,L]
+    RewriteRule ^(.*[^js|^css|^png])$ index.php?url=$1 [QSA,L]
 </IfModule>

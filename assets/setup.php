@@ -48,4 +48,4 @@ spl_autoload_register(function ($class) {
 ini_set('date.timezone', 'America/Chicago');
 date_default_timezone_set('America/Chicago');
 
-echo 'setup completed...';
+require ROOT_PATH . 'views/head.php';
