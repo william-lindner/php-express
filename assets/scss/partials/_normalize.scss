@@ -130,6 +130,7 @@ table {
 
 html {
   font-size: 14pt;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 body {
@@ -141,5 +142,6 @@ a {
   text-decoration: none;
   &:visited {
     color: inherit;
+    font-weight: inherit;
   }
 }
