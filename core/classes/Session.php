@@ -29,7 +29,7 @@ class Session
     public static function start()
     {
 
-        dd(parse_ini_file('./../env.ini.example'));
+        dd(parse_ini_file('./../../.ini'));
 
         $session_check = session_status() === PHP_SESSION_ACTIVE;
         if ($session_check) {
