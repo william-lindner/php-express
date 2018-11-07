@@ -41,3 +41,7 @@ if (!is_callable('nprint')) {
         echo $output . '<br>';
     }
 }
+
+if (!is_callable('config')) {
+
+}
