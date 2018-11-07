@@ -28,3 +28,16 @@ if (!is_callable('dd')) {
         die(dump($content));
     }
 }
+
+if (!is_callable('nprint')) {
+
+    /**
+     * Prints the output and adds a new line after.
+     * @param string $output
+     * @return void
+     */
+    function nprint($output)
+    {
+        echo $output . '<br>';
+    }
+}
