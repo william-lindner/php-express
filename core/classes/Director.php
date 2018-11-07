@@ -2,7 +2,7 @@
 
 namespace Teapot;
 
-class Director
+class Conductor
 {
     private $controller;
     private $action;
@@ -10,7 +10,6 @@ class Director
     public function __construct($http = '')
     {
 
-        // This splits the GET request into / pieces
         $request = explode('/', $http['url']);
         array_pop($request);
         var_dump($request);
