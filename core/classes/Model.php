@@ -17,13 +17,14 @@ abstract class Model
         $this->db = new PDOdbc();
     }
 
-    // NOTE: Request should only be used in the context of AJAX with the current builds.
-    // NOTE: You can always call the methods directly if you want an array of results.
+    /**
+     *
+     */
     public function request($request = null, $data = [])
     {
         $this->state = 501;
-        // There are occasions when a request is passed as part of the array.
-        // This mostly occurs when AJAX is involved. The following code handles this use case.
+
+        // Ajax commonly passes information as an array, so this was added to handle it.
         if (is_array($request)) {
             if (isset($request['request'])) {
                 $data    = $request;
@@ -69,7 +70,6 @@ abstract class Model
             'state'   => $this->state,
             'results' => $results,
         ]);
-        exit;
     }
 
 }
