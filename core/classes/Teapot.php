@@ -2,8 +2,8 @@
 
 namespace Teapot;
 
+use Teapot\Exception;
 use Teapot\Session;
-use Teapot\TPException;
 
 final class Teapot
 {
@@ -30,7 +30,7 @@ final class Teapot
         // Note: not certain about the include path takeover
         set_include_path($_SERVER['DOCUMENT_ROOT'] . '/../app');
         ini_set('include_path', $_SERVER['DOCUMENT_ROOT'] . '/../app');
-        TPException::register();
+        Exception::register();
         Session::start();
 
         self::$config = Configuration::ini();
