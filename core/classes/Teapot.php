@@ -6,7 +6,7 @@ use Teapot\Session;
 
 final class Teapot
 {
-    public static $settings;
+    protected static $config = null;
 
     public function __construct()
     {
@@ -17,10 +17,21 @@ final class Teapot
         Exception::register();
         Session::start();
 
-        self::$settings = Configuration::load();
+        self::$config = Configuration::load();
 
         require 'routes.php';
+    }
 
+    /**
+     * Loads the configuration setting from the protected property.
+     * TODO: Will need to respect guards
+     */
+    public static function config($key)
+    {
+        if (isset(self::$config[$key])) {
+            return self::$config[$key];
+        }
+        return false;
     }
 
 }

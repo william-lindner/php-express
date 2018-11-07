@@ -7,4 +7,4 @@ use Teapot\Teapot;
 
 new Teapot;
 
-dd(Teapot::$settings);
+dd(config('session'));
