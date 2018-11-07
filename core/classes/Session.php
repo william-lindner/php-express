@@ -29,6 +29,8 @@ class Session
     public static function start()
     {
 
+        nprint('Starting the session...');
+        return true;
         dd(parse_ini_file('./../../.ini'));
 
         $session_check = session_status() === PHP_SESSION_ACTIVE;
