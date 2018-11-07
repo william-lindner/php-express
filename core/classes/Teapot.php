@@ -6,7 +6,7 @@ use Teapot\Session;
 
 final class Teapot
 {
-    protected $settings;
+    public static $settings;
 
     public function __construct()
     {
@@ -16,6 +16,8 @@ final class Teapot
         ini_set('include_path', $_SERVER['DOCUMENT_ROOT'] . '/../app');
         Exception::register();
         Session::start();
+
+        self::$settings = Configuration::load();
 
         require 'routes.php';
 
