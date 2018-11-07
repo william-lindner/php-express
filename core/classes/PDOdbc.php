@@ -2,31 +2,16 @@
 
 namespace Teapot;
 
+use Teapot\Teapot;
+
+$tmp = Teapot::config('database');
+
 DEFINE('PDO_TIMEOUT_REPEAT', true);
 DEFINE('PDO_TIMEOUT_IGNORE', false);
 
 class PDOdbc extends PDO
 {
-    /*
-    Initial settings are for locating the .ini files for your db connections.
-    You may setup as many as you like so long as the name of the .ini file begins with the
-    same string as you call when instantiating this class.
 
-    The .ini file should be formatted as below:
-    [database]
-    hostname = HOSTNAME
-    username = "USERNAME"
-    password = "PASSWORD"
-    dbname = "DATABASE"
-    port = PORT_NUM
-
-     */
-    const INI_PATH = CONFIGURATION_PATH . '/database/';
-    const INI_EXT  = '.ini';
-    /*
-    Enabling multi line queries is not typically recommended. Disable this when you have less experienced
-    developers. More experienced developers will work around the issues in other ways.
-     */
     const ENABLE_MULTI_LINE_QUERIES = true;
     const ENABLE_QUERY              = false;
     const CHARSET                   = 'UTF8';
@@ -75,16 +60,6 @@ class PDOdbc extends PDO
                 self::ATTR_DRIVER_NAME            => 'mysql',
                 self::ATTR_ERRMODE                => self::ERRMODE_EXCEPTION,
             ]);
-    }
-
-    //Prevent the use of PDO::query() by throwing an exception. Internally use parent::query()
-    public function query($sql)
-    {
-        if (self::ENABLE_QUERY) {
-            return parent::query($sql);
-        } else {
-            throw new \Exception('Direct query function calls are not permitted. Please use request().', 500);
-        }
     }
 
     public function select()
