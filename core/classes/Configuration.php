@@ -11,6 +11,13 @@ class Configuration
     protected static function load($file)
     {
 
+        $path   = $_SERVER['DOCUMENT_ROOT'] . "/../config/{$file}.php";
+        $exists = file_exists($path);
+
+        if (!isset(self::$config[$file]) && $exists) {
+            self::$config[$file] = require $path;
+        }
+
     }
 
     /**
