@@ -5,15 +5,19 @@ namespace Teapot;
 class Configuration
 {
 
-    protected static $ini = null;
-
+    protected static $ini    = null;
     protected static $config = [];
+
+    protected static function load($file)
+    {
+
+    }
 
     /**
      * Loads the settings from the ini file
      * @return array
      */
-    public static function load()
+    public static function ini()
     {
         // TODO: write out try catch
         if (!isset(self::$ini)) {

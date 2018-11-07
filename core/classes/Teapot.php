@@ -33,7 +33,7 @@ final class Teapot
         TPException::register();
         Session::start();
 
-        self::$config = Configuration::load();
+        self::$config = Configuration::ini();
         self::$guard  = Configuration::guards();
 
         $ip                = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
@@ -50,7 +50,6 @@ final class Teapot
 
     /**
      * Loads the configuration setting from the protected property.
-     * TODO: Will need to respect guards
      * @param string $key
      */
     public static function config($key)
