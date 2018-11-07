@@ -4,7 +4,6 @@ namespace Teapot;
 
 DEFINE('PDO_TIMEOUT_REPEAT', true);
 DEFINE('PDO_TIMEOUT_IGNORE', false);
-// DEFINE('CONFIGURATION_PATH', $_SERVER['DOCUMENT_ROOT'] . '/../../configuration'); # enable if doing isolated testing
 
 class PDOdbc extends PDO
 {
