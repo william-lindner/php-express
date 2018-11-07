@@ -6,7 +6,11 @@ spl_autoload_register(function ($class) {
     }
     $request = explode('\\', $class);
     $class   = array_pop($request);
-    $path    = __DIR__ . "/../classes/{$class}.php";
+    if (class_exists($class)) {
+        return;
+    }
+
+    $path = __DIR__ . "/../classes/{$class}.php";
     if (file_exists($path)) {
         require_once $path;
     }
