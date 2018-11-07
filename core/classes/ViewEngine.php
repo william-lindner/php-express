@@ -5,96 +5,80 @@ namespace Teapot;
 abstract class ViewEngine
 {
     protected $viewPath;
-    protected $widgetPath;
-
     private $viewContents;
-    private $view;
 
-    public function __construct($viewPath, $relative = true)
+    public function __construct($viewPath, $relativePath = true)
     {
-        // setup the location for the views / templates
-        if ($relative) {
+        if ($relativePath) {
             $this->viewPath = $_SERVER['DOCUMENT_ROOT'] . $viewPath;
         } else {
             $this->viewPath = $viewPath;
         }
-        $this->widgetPath = $_SERVER['DOCUMENT_ROOT'] . '/widgets/';
     }
 
+    // NOTE: The loadView is left in a state that allows it to be overridden intentionally.
     public function loadView($view, $data = [])
     {
         $fullViewPath = $this->viewPath . $view;
-
-        // check to see if the file is actually there
         if (!file_exists($fullViewPath)) {
-            throw new \Exception('Unable to locate view file.', 404); # https://www.w3schools.com/tags/ref_httpmessages.asp
+            # https://www.w3schools.com/tags/ref_httpmessages.asp
+            throw new \Exception('Unable to locate view file at location: ' . $fullViewPath, 404);
         }
 
         $this->viewContents = @file_get_contents($fullViewPath);
-        $this->view         = $this->replaceTokens($data);
-        echo $this->view;
+        if (!$this->viewContents) {
+            throw new \Exception('File found but unable to be loaded. Please verify permissions.', 409);
+        }
+        echo $this->replaceTokens($data);
     }
 
     final private function replaceTokens($data = [])
     {
-        // check if tokens exist and that data has been passed
+        // TODO: Line 65 and 70 are a repeat. These can be merged to reduce time complexity
         $tokensExist = preg_match('/({{[^}]*}})/', $this->viewContents);
         if (!$data || !$tokensExist) {
             return $this->viewContents;
         }
+
         $viewMinusTokens = preg_split('/({{[^}]*}})/', $this->viewContents);
         preg_match_all('/({{[^}]*}})/', $this->viewContents, $viewTokens);
         $viewTokens = $viewTokens[0];
-        // loop through tokens for things to replace
+
         for ($i = 0; $i < count($viewTokens); $i++) {
             $viewToken = &$viewTokens[$i];
+
             if (strpos($viewToken, '::')) {
-                // When function :: dataset syntax is used
-                // find the function in the class.
                 $functionArray = explode('::', $viewToken);
                 $function      = substr($functionArray[0], 2);
                 $dataKey       = substr($functionArray[1], 0, -2);
+
                 if (!method_exists($this, $function)) {
-                    // needs to throw exception
-                    echo 'No method to handle data reference<br>';
+                    throw new \Exception('No Method exists to handle the template token.', 409);
                 }
                 if (!isset($data[$dataKey])) {
-                    // needs exception
-                    echo 'Data point does not exist';
+                    throw new \Exception('Data point does not exist : ' . $dataKey, 400);
                 }
-                // load the method - passing the data
+
                 $viewToken = $this->{$function}($data[$dataKey]);
-            } elseif (strpos($viewToken, '>')) {
-                // widget loader
-            } else {
-                $token = substr($viewToken, 2, -2);
-                if (!isset($data[$token])) {
-                    echo 'Woops...<br>';
-                    //throw new \Exception("Not all tokens replaced.", 206); # https://www.w3schools.com/tags/ref_httpmessages.asp
-                }
-                $viewToken = $data[$token];
+                continue;
             }
+
+            $token = substr($viewToken, 2, -2);
+            if (!isset($data[$token])) {
+                throw new \Exception('Token does not exist : ' . $token, 400);
+            }
+            $viewToken = $data[$token];
+        }
+
+        if (count($viewMinusTokens) !== (count($viewTokens) + 1)) {
+            throw new Exception('Not all tokens replaced.', 201);
         }
 
         $compiledView = '';
-        // reassemble the view for export
-        for ($i = 0; $i < count($viewMinusTokens); $i++) {
+        for ($i = 0; $i < count($viewTokens); $i++) {
             $compiledView .= $viewMinusTokens[$i] . $viewTokens[$i];
         }
+        $compiledView .= array_pop($viewMinusTokens);
         return $compiledView;
     }
-
-    public function createWidget($object)
-    {
-
-    }
 }
-
-/*
-
-{{standard_token}}
-
-{{>widget_token}}
-
-{{method::key}}
- */

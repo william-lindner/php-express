@@ -6,76 +6,69 @@ abstract class Model
 {
     protected $db;
     protected $request;
-
     protected $status = 'unknown';
     protected $reason = 'unknown';
-    protected $state  = 501; # https://www.w3schools.com/tags/ref_httpmessages.asp
+    protected $state;
 
-    private $dataType = 'json';
     private $data;
 
-    public function __construct($dataType = 'json')
+    public function __construct()
     {
-        // setup the database connection
-        $this->db = new db_connect();
+        $this->db = new PDOdbc();
     }
+
+    // NOTE: Request should only be used in the context of AJAX with the current builds.
+    // NOTE: You can always call the methods directly if you want an array of results.
     public function request($request = null, $data = [])
     {
-
-        // check to see if a request is being made
-        if (!$request || !is_string($request)) {
-            if (is_array($request)) {
-                if (isset($request['request'])) {
-                    // when the request is an array, attempt to interpret the array
-                    $data    = $request;
-                    $request = $request['request'];
-                    unset($data['request']);
-                }
-
-            } else {
-                $this->returnError('No request passed to the model.');
+        $this->state = 501;
+        // There are occasions when a request is passed as part of the array.
+        // This mostly occurs when AJAX is involved. The following code handles this use case.
+        if (is_array($request)) {
+            if (isset($request['request'])) {
+                $data    = $request;
+                $request = $request['request'];
+                unset($data['request']);
             }
         }
-        $this->request = $request;
-        // check for the method and return error if not found
+
+        if (!$request || !is_string($request)) {
+            $this->returnError('No request passed to the model.');
+        }
         if (!method_exists($this, $request)) {
             $this->returnError('Request method does not exist.');
         }
 
-        // load the request method
-        $results = $this->{$this->request}($data);
+        $this->request = $request;
+        $results       = $this->{$this->request}($data);
         if ($results !== null) {
             $this->status = 'success';
             $this->reason = 'All data acquired successfully.';
             $this->state  = 200;
             $this->echoResults($results);
-        } else {
-            $this->echoResults('No results returned from Model', 204);
-        }
 
+        } else {
+            $this->returnError('No results returned from Model', 204);
+        }
     }
 
     protected function returnError($reason, $state = 501)
     {
-        // set the status to an error state
         $this->status = 'error';
         $this->reason = $reason;
         $this->state  = $state;
         $this->echoResults();
     }
 
-    protected function echoResults($results = [], $dataType = 'json')
+    protected function echoResults($results = [])
     {
-        // fix the results to an array if not array by default
-        switch ($dataType) {
-            default:
-                echo json_encode([
-                    'status'  => $this->status,
-                    'reason'  => $this->reason,
-                    'state'   => $this->state,
-                    'results' => $results,
-                ]);
-        }
+        $this->state = 200;
+        echo json_encode([
+            'status'  => $this->status,
+            'reason'  => $this->reason,
+            'state'   => $this->state,
+            'results' => $results,
+        ]);
         exit;
     }
 
