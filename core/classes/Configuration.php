@@ -5,12 +5,24 @@ namespace Teapot;
 class Configuration
 {
 
-    protected static $ini_settings = [];
+    protected static $ini        = null;
+    protected static $ini_config = null;
 
+    /**
+     * Loads the settings from the ini file
+     * @return array
+     */
     public static function load()
     {
-        // TODO: Add in try catch
-        return parse_ini_file($_SERVER['DOCUMENT_ROOT'] . '/../.ini', true);
+        // TODO: write out try catch
+        if (!isset(self::$ini)) {
+            try {
+                self::$ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . '/../.ini', true);
+            } catch (\Exception $e) {
+
+            }
+        }
+        return self::$ini;
     }
 
     /**
@@ -19,7 +31,10 @@ class Configuration
      */
     public static function guards()
     {
-        $ini_settings = require $_SERVER['DOCUMENT_ROOT'] . '/../config/ini.php';
-        return isset($ini_settings['protected']) ? $ini_settings['protected'] : [];
+        if (!isset(self::$ini_config)) {
+            self::$ini_config = require $_SERVER['DOCUMENT_ROOT'] . '/../config/ini.php';
+        }
+
+        return isset(self::$ini_config['protected']) ? self::$ini_config['protected'] : [];
     }
 }
