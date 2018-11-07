@@ -1,7 +1,7 @@
 <?php
 
-echo 'Teapot placed on burner...';
-
 require './../core/setup.php';
 
-echo '<br>Teapot boiled.';
+nprint('Teapot placed on burner...');
+
+nprint('Teapot boiled.');
