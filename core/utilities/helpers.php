@@ -1,4 +1,6 @@
 <?php
+
+use Teapot\Teapot;
 /**
  * Creates an output string to be echoed.
  * @param any $content
@@ -33,6 +35,12 @@ function nprint($output)
     echo $output . '<br>';
 }
 
-if (!is_callable('config')) {
-
+/**
+ * Loads the configuration option based on a key passed.
+ * @param
+ * @return any | bool
+ */
+function config($key)
+{
+    return \Teapot\Teapot::config($key);
 }
