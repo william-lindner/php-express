@@ -2,7 +2,7 @@
 
 namespace Teapot;
 
-class Exception
+class TPException
 {
     /**
      * Registers the Exception handler within the class to output all exceptions in Teapot format.
@@ -10,7 +10,7 @@ class Exception
      */
     public static function register()
     {
-        set_exception_handler(['\Teapot\Exception', 'handler']);
+        set_exception_handler(['\Teapot\TPException', 'handler']);
     }
 
     public static function handler($e)
