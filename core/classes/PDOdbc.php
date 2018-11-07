@@ -88,6 +88,26 @@ class PDOdbc extends PDO
         }
     }
 
+    public function select()
+    {
+
+    }
+
+    public function insert()
+    {
+
+    }
+
+    public function delete()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
+
     //prepared statement short hand with integrity checks
     public function request($query, $params = [], $repeat_on_timeout = PDO_TIMEOUT_IGNORE)
     {
@@ -207,8 +227,4 @@ class PDOdbc extends PDO
         return $v;
     }
 
-    public function schwarzenegger()
-    {
-        return "I am here to pump you up.";
-    }
-} //END CLASS
+}
