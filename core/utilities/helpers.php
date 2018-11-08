@@ -8,11 +8,9 @@ use Teapot\Teapot;
  */
 function dump($content)
 {
-    ob_start();
     echo '<pre>';
     var_dump($content);
     echo '</pre>';
-    return ob_get_clean();
 }
 
 /**
@@ -22,7 +20,11 @@ function dump($content)
  */
 function dd($content)
 {
-    die(dump($content));
+    ob_start();
+    dump($content);
+    debug_print_backtrace();
+    $output = ob_get_clean();
+    die($output);
 }
 
 /**

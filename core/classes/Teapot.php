@@ -2,6 +2,7 @@
 
 namespace Teapot;
 
+use Teapot\Configuration;
 use Teapot\Exception;
 use Teapot\Session;
 
@@ -52,10 +53,13 @@ final class Teapot
      * Loads the configuration setting from the protected property.
      * @param string $key
      */
-    public static function config($key)
+    public static function config($key, $instance = null)
     {
 
-        if (!in_array($key, self::$guard) && isset(self::$config[$key])) {
+        $access = !in_array($key, self::$guard) && isset(self::$config[$key]);
+        $access = true;
+
+        if ($access) {
             return self::$config[$key];
         }
 

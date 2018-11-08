@@ -15,3 +15,8 @@ path = /
 domain = 
 samesite = Strict
 strict_mode = false
+
+[mail]
+host = 
+username =
+password =
