@@ -6,6 +6,6 @@ return [
      * to be able to access.
      */
     'protected' => [
-        'session', 'database',
+        'session', 'database', 'mail',
     ],
 ];

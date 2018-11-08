@@ -17,7 +17,7 @@ final class Teapot
     // holds a list of classes allowed to access protected config keys
     protected static $allowed = [];
 
-    public static $environment;
+    public static $is_local;
     public static $path;
     public static $method;
 
@@ -25,7 +25,7 @@ final class Teapot
     {
 
         if (self::$setup) {
-            return;
+            return new self;
         }
 
         // Note: not certain about the include path takeover
@@ -37,8 +37,8 @@ final class Teapot
         self::$config = Configuration::ini();
         self::$guard  = Configuration::guards();
 
-        $ip                = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
-        self::$environment = (($ip !== 0 && in_array($ip, ['127.0.0.1', '::1'])) || self::$config['env'] === 'local');
+        $ip             = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
+        self::$is_local = (($ip !== 0 && in_array($ip, ['127.0.0.1', '::1'])) || self::$config['env'] === 'local');
 
         self::$path   = $_SERVER['REQUEST_URI'];
         self::$method = $_SERVER['REQUEST_METHOD'];
