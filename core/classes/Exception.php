@@ -13,10 +13,12 @@ class Exception
         set_exception_handler(['self', 'handler']);
     }
 
+    /**
+     * Handles exceptions in a quiet way for the framework.
+     * @return void
+     */
     public static function handler($e)
     {
-        $trace = debug_backtrace();
-        echo dump($e);
-        return false;
+        dump($e);
     }
 }
