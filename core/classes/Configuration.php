@@ -46,7 +46,8 @@ class Configuration
     }
 
     /**
-     *
+     * Loads the list of classes that are permitted access to ini information regardless of guard
+     * @return array
      */
     public static function allowed()
     {
