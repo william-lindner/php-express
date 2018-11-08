@@ -40,7 +40,7 @@ final class Teapot
         $ip                = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
         self::$environment = (($ip !== 0 && in_array($ip, ['127.0.0.1', '::1'])) || self::$config['env'] === 'local');
 
-        self::$path   = $_SERVER['PATH_INFO'];
+        self::$path   = $_SERVER['REQUEST_URI'];
         self::$method = $_SERVER['REQUEST_METHOD'];
 
         // self::$allowed = require '/../';
