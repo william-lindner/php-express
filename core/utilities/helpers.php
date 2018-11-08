@@ -20,9 +20,14 @@ function dump($content)
  */
 function dd($content)
 {
+
+    $caller = debug_backtrace(0, 1)[0];
+
     ob_start();
     dump($content);
-    debug_print_backtrace();
+    echo '<pre>';
+    echo "{$caller['file']} (line: {$caller['line']})";
+    echo '</pre>';
     $output = ob_get_clean();
     die($output);
 }

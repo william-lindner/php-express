@@ -29,7 +29,6 @@ class Configuration
         // TODO: write out try catch
         self::$ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . '/../.ini', true);
 
-        dd(self::$ini);
         return self::$ini;
     }
 
