@@ -27,13 +27,9 @@ class Configuration
     public static function ini()
     {
         // TODO: write out try catch
-        if (!isset(self::$ini)) {
-            try {
-                self::$ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . '/../.ini', true);
-            } catch (\Exception $e) {
+        self::$ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . '/../.ini', true);
 
-            }
-        }
+        dd(self::$ini);
         return self::$ini;
     }
 
