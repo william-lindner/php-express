@@ -42,7 +42,6 @@ final class Teapot
         $ip             = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
         self::$is_local = (($ip !== 0 && in_array($ip, ['127.0.0.1', '::1'])) || self::$config['env'] === 'local');
 
-        require 'routes.php';
         Route::direct($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
         self::$setup = true;
