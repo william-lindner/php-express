@@ -43,6 +43,6 @@ class Route
 
     protected static function strip($path)
     {
-        return str_replace('/', '', $path);
+        return trim($path, '/');
     }
 }
