@@ -10,7 +10,7 @@ class Exception
      */
     public static function register()
     {
-        set_exception_handler(['self', 'handler']);
+        set_exception_handler(['\\Teapot\\Exception', 'handler']);
     }
 
     /**

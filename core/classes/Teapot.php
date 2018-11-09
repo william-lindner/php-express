@@ -18,9 +18,11 @@ final class Teapot
     protected static $allowed = [];
 
     public static $is_local;
-    public static $path;
-    public static $method;
 
+    /**
+     * Loads the base configuration and configures the Teapot
+     * @return instanceof Teapot
+     */
     public function __construct()
     {
 
@@ -40,12 +42,9 @@ final class Teapot
         $ip             = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 0;
         self::$is_local = (($ip !== 0 && in_array($ip, ['127.0.0.1', '::1'])) || self::$config['env'] === 'local');
 
-        self::$path   = $_SERVER['REQUEST_URI'];
-        self::$method = $_SERVER['REQUEST_METHOD'];
-
-        // self::$allowed = require '/../';
-
         require 'routes.php';
+        Route::direct($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
+
         self::$setup = true;
     }
 
