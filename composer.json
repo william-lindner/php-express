@@ -1,0 +1,13 @@
+{
+  "name": "william/teapot",
+  "description": "A lightweight MVC framework.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "william-lindner",
+      "email": "lindner.will@gmail.com"
+    }
+  ],
+  "require": {}
+}
