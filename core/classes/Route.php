@@ -59,7 +59,7 @@ class Route
 
         require 'routes.php';
 
-        $request    = static::strip($request);
+        $request    = static::stripSlashes($request);
         $executable = isset(static::$routes[$method][$request]) && static::$routes[$method][$request] instanceof Closure;
 
         if ($executable) {
@@ -72,12 +72,12 @@ class Route
      *
      * @param string $method
      * @param string $path
-     * @param Closure $callback
+     * @param closure $callback
      * @return void
      */
     protected static function register($method, $path, Closure $callback)
     {
-        $path = static::strip($path);
+        $path = static::stripSlashes($path);
 
         static::$routes[$method][$path] = $callback;
     }
@@ -88,7 +88,7 @@ class Route
      * @param string $path
      * @return string
      */
-    protected static function strip($path)
+    protected static function stripSlashes($path)
     {
         return trim($path, '/');
     }
