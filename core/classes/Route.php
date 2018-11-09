@@ -15,6 +15,8 @@ class Route
 
     public static function get($path, Closure $callback)
     {
+        $path = static::strip($path);
+
         static::$routes['GET'][$path] = $callback;
     }
 
@@ -31,10 +33,16 @@ class Route
     public static function direct($method, $request)
     {
 
+        $request    = static::strip($request);
         $executable = isset(static::$routes[$method][$request]) && static::$routes[$method][$request] instanceof Closure;
 
         if ($executable) {
             static::$routes[$method][$request]();
         }
+    }
+
+    protected static function strip($path)
+    {
+        return str_replace('/', '', $path);
     }
 }
