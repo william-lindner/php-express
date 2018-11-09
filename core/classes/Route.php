@@ -13,16 +13,37 @@ class Route
         'PATCH' => [],
     ];
 
+    /**
+     * Helper function to register a GET request.
+     *
+     * @param string $path
+     * @param closure $callback
+     * @return void
+     */
     public static function get($path, Closure $callback)
     {
         static::register('GET', $path, $callback);
     }
 
+    /**
+     * Helper function to register a POST request.
+     *
+     * @param string $path
+     * @param closure $callback
+     * @return void
+     */
     public static function post($path, Closure $callback)
     {
         static::register('POST', $path, $callback);
     }
 
+    /**
+     * Helper function to register a PATCH request.
+     *
+     * @param string $path
+     * @param closure $callback
+     * @return void
+     */
     public static function patch($path, Closure $callback)
     {
         static::register('PATCH', $path, $callback);
