@@ -1,3 +1,3 @@
 <?php
 
-require './../core/setup.php';
+require __DIR__ . '/../core/setup.php';
