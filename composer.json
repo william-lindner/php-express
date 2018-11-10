@@ -9,5 +9,10 @@
       "email": "lindner.will@gmail.com"
     }
   ],
+  "autoload": {
+    "psr-4": {
+      "Teapot\\": "core/classes"
+    }
+  },
   "require": {}
 }
