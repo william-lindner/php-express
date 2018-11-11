@@ -51,3 +51,20 @@ function config($key)
 {
     return \Teapot\Teapot::config($key);
 }
+
+/**
+ * Loads view contents from the view folder
+ *
+ * @param string $file
+ */
+function view($file)
+{
+    $view_path = __DIR__ . '/../../resources/views/';
+    $file      = strpos($file, '.view.php') ? $file : $file . '.view.php';
+
+    if (!file_exists($view_path . $file)) {
+        throw new \Exception('Unable to locate view.', 418);
+    }
+
+    require $view_path . $file;
+};

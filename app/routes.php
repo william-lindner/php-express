@@ -3,7 +3,7 @@
 use Teapot\Route;
 
 Route::get('/', function () {
-    nprint('Found ya!');
+    view('index');
 });
 
 Route::get('/about', function () {
