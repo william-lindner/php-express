@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+/** mbi.php **/
+require_once __DIR__ . '/../../vendor/autoload.php';
+require __DIR__ . "/../../base/helpers/inquirers.php";
+require __DIR__ . "/../../base/helpers/debuggers.php";
+require __DIR__ . "/../../base/helpers/loaders.php";
+define('__BASEDIR__', __DIR__ . '/../..');
+
+use App\Console\Commands\AssignSurveys;
+use App\Console\Commands\scanMails;
+use Symfony\Component\Console\Application;
+use Teapot\Configuration;
+
+$base_dir = __DIR__ . "/../..";
+Configuration::setConfig($base_dir);
+$app = new Application();
+$app->add(new AssignSurveys());
+$app->add(new scanMails());
+$app->run();

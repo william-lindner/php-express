@@ -1,6 +1,5 @@
 <?php
 
-use Teapot\Teapot;
 /**
  * Creates an output string to be echoed.
  * @param any $content
@@ -37,34 +36,7 @@ function dd($content)
  * @param string $output
  * @return void
  */
-function nprint($output)
+function nprint(string $output)
 {
     echo $output . '<br>';
 }
-
-/**
- * Loads the configuration option based on a key passed.
- * @param
- * @return any | bool
- */
-function config($key)
-{
-    return \Teapot\Teapot::config($key);
-}
-
-/**
- * Loads view contents from the view folder
- *
- * @param string $file
- */
-function view($file, $data = [])
-{
-    $view_path = __DIR__ . '/../../resources/views/';
-    $file      = strpos($file, '.view.php') ? $file : $file . '.view.php';
-
-    if (!file_exists($view_path . $file)) {
-        throw new \Exception('Unable to locate view.', 418);
-    }
-
-    require $view_path . $file;
-};
