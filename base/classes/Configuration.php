@@ -1,6 +1,6 @@
 <?php
 
-namespace Teapot;
+namespace Express;
 
 class Configuration
 {
@@ -51,8 +51,8 @@ class Configuration
      */
     public static function allowed()
     {
-        if (!isset(self::$config['teapot'])) {
-            self::$$config['teapot'] = require $_SERVER['DOCUMENT_ROOT'] . '/../config/ini.php';
+        if (!isset(self::$config['Express'])) {
+            self::$$config['Express'] = require $_SERVER['DOCUMENT_ROOT'] . '/../config/ini.php';
         }
 
         return isset(self::$config['teapot']['protected']) ? self::$config['teapot']['protected'] : [];

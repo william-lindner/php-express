@@ -1,9 +1,9 @@
 <?php
 
-use Teapot\Teapot;
+use Express\Express;
 
 require __DIR__ . '/utilities/helpers.php';
 require __DIR__ . '/../vendor/autoload.php';
 
-Teapot::fill();
-Teapot::boil();
+Express::fill();
+Express::boil();

@@ -1,5 +1,5 @@
 {
-  "name": "william/teapot",
+  "name": "william-lindner/express",
   "description": "A lightweight MVC framework.",
   "type": "library",
   "license": "MIT",
@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "Teapot\\": "core/classes"
+      "Express\\": "base/classes",
+      "App\\": "app/"
     }
   },
   "require": {}

@@ -1,6 +1,7 @@
 <?php
 
-use Teapot\Teapot;
+use Express\Express;
+
 /**
  * Creates an output string to be echoed.
  * @param any $content
@@ -49,7 +50,7 @@ function nprint($output)
  */
 function config($key)
 {
-    return \Teapot\Teapot::config($key);
+    return \Express\Express::config($key);
 }
 
 /**
