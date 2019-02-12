@@ -1,6 +1,6 @@
 <?php
 
-namespace Teapot;
+namespace Express;
 
 abstract class Model
 {

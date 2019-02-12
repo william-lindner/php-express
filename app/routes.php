@@ -1,6 +1,6 @@
 <?php
 
-use Teapot\Route;
+use Express\Route;
 
 Route::get('/', function () {
     nprint('Found ya!');

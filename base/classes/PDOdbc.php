@@ -1,10 +1,10 @@
 <?php
 
-namespace Teapot;
+namespace Express;
 
-use Teapot\Teapot;
+use Express\Express;
 
-$tmp = Teapot::config('database');
+$tmp = Express::config('database');
 
 DEFINE('PDO_TIMEOUT_REPEAT', true);
 DEFINE('PDO_TIMEOUT_IGNORE', false);

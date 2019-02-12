@@ -1,16 +1,16 @@
 <?php
 
-namespace Teapot;
+namespace Express;
 
 class Exception
 {
     /**
-     * Registers the Exception handler within the class to output all exceptions in Teapot format.
+     * Registers the Exception handler within the class to output all exceptions in Express format.
      * @return void
      */
     public static function register()
     {
-        set_exception_handler(['\\Teapot\\Exception', 'handler']);
+        set_exception_handler(['\\Express\\Exception', 'handler']);
     }
 
     /**

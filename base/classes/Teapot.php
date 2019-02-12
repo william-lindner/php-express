@@ -1,12 +1,12 @@
 <?php
 
-namespace Teapot;
+namespace Express;
 
-use Teapot\Configuration;
-use Teapot\Exception;
-use Teapot\Session;
+use Express\Configuration;
+use Express\Exception;
+use Express\Session;
 
-final class Teapot
+final class Express
 {
     protected static $setup  = false;
     protected static $config = null;
@@ -25,7 +25,7 @@ final class Teapot
     }
 
     /**
-     * Loads the base configuration and configures the Teapot
+     * Loads the base configuration and configures the Express
      * @return void
      */
     public static function fill()
