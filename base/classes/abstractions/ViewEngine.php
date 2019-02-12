@@ -1,6 +1,6 @@
 <?php
 
-namespace Express;
+namespace Express\Abstractions;
 
 abstract class ViewEngine
 {
@@ -49,8 +49,8 @@ abstract class ViewEngine
 
             if (strpos($viewToken, '::')) {
                 $functionArray = explode('::', $viewToken);
-                $function      = substr($functionArray[0], 2);
-                $dataKey       = substr($functionArray[1], 0, -2);
+                $function = substr($functionArray[0], 2);
+                $dataKey = substr($functionArray[1], 0, -2);
 
                 if (!method_exists($this, $function)) {
                     throw new \Exception('No Method exists to handle the template token.', 409);

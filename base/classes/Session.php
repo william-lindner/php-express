@@ -2,7 +2,7 @@
 
 namespace Express;
 
-class Session implements \IteratorAggregate
+class Session
 {
 
     const ONE_HOUR        = 3600;
@@ -16,13 +16,9 @@ class Session implements \IteratorAggregate
         'use_only_cookies' => 1,
     ];
 
-    private $state;
-    private $sessionData;
+    protected $session;
 
-    protected $config;
-    protected static $instance;
-
-    private function __construct()
+    private static function configure()
     {
         ini_set('session.gc_maxlifetime', (self::DEFAULT_EXPIRY));
         ini_set('session.cookie_lifetime', (self::DEFAULT_EXPIRY));
@@ -32,26 +28,23 @@ class Session implements \IteratorAggregate
         ini_set('session.cookie_secure', 1);
 
         session_set_cookie_params((self::DEFAULT_EXPIRY), '/', '.' . 'localhost', true);
-        session_name('my-session');
-
+        session_name(config('session.name') ?: 'my-session');
     }
 
     /**
-     * Builds the session instance and starts the session
+     * Builds the session configuration from constructor and starts the session
      *
-     * @return Session
+     * @return bool
      */
     public static function start()
     {
-
-        static::$instance = static::$instance ?? new static();
-
         if (session_status() === PHP_SESSION_ACTIVE) {
-            return static::$instance;
+            return;
         }
 
-        session_start();
-        return static::$instance;
+        self::configure();
+
+        return session_start();
     }
 
     /**
@@ -67,31 +60,26 @@ class Session implements \IteratorAggregate
         session_destroy();
         session_abort();
 
-        setcookie('my-session', '', time() - self::ONE_HOUR);
+        setcookie(config('session.name'), '', time() - self::ONE_HOUR);
 
         return !(session_status() === PHP_SESSION_ACTIVE);
     }
 
-    // This regenerates the session id every half hour.
-    // Which helps prevent someone from acquiring the information from our cookie
-    // and using it maliciously.
+    /**
+     * Regenerates the session identifier
+     *
+     * @return void
+     */
     public static function regenerate()
     {
-        if (!isset($_SESSION['_id_expires_on'])) {
-            $_SESSION['_id_expires_on'] = time();
+        if (!isset($_SESSION['_id_expires_at'])) {
+            $_SESSION['_id_expires_at'] = time();
+            return;
         }
 
-        if ($_SESSION['_id_expires_on'] + self::ONE_HOUR / 2 < time()) {
+        if ($_SESSION['_id_expires_at'] + self::ONE_HOUR / 2 < time()) {
             session_regenerate_id(true);
-            $_SESSION['_id_expires_on'] = time();
+            $_SESSION['_id_expires_at'] = time();
         }
-    }
-
-    /**
-     *
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($_SESSION);
     }
 }

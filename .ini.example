@@ -1,22 +1,30 @@
-env = local
+[server]
+environment=dev ;dev | prod
+display_errors=0
+timezone=America/Chicago
 
+; mysql is only supported
 [database]
-username =
-password =  
-host = 
+hostname=localhost
+username=
+password=
+database=
+port=8889
+charset=UTF8
 
 ;http://php.net/manual/en/session.configuration.php
 [session]
-max_lifetime = 0
-http_only = true
-ssl_require = true
-use_only_cookies = true
-path = /
-domain = 
-samesite = Strict
-strict_mode = false
+name=my-session
+max_lifetime=0
+http_only=true
+ssl_require=true
+use_only_cookies=true
+path=/
+domain=
+samesite=Strict
+strict_mode=false
 
 [mail]
-host = 
-username =
-password =
+hostname=
+username=
+password=

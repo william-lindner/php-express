@@ -19,6 +19,13 @@ class Exception
      */
     public static function handler($e)
     {
-        dump($e);
+        if (strtolower(config('server.environment')) !== 'prod') {
+            $code    = $e->getCode ?? 404;
+            $message = $e->getMessage() ?? 'Unknown';
+            dd([
+                'Exception' => "[{$code}] {$message}",
+                'Trace'     => debug_backtrace()[0]['args'],
+            ]);
+        }
     }
 }

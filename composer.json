@@ -10,10 +10,21 @@
     }
   ],
   "autoload": {
+    "files": [
+      "base/utilities/debuggers.php",
+      "base/utilities/filters.php",
+      "base/utilities/inquirers.php",
+      "base/utilities/loaders.php"
+    ],
     "psr-4": {
       "Express\\": "base/classes",
       "App\\": "app/"
     }
+  },
+  "scripts": {
+    "post-root-package-install": [
+      "@php -r \"file_exists('.ini') || copy('.ini.example', '.ini');\""
+    ]
   },
   "require": {}
 }

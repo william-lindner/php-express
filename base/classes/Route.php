@@ -17,36 +17,36 @@ class Route
      * Helper function to register a GET request.
      *
      * @param string $path
-     * @param closure $callback
+     * @param any $handler
      * @return void
      */
-    public static function get($path, Closure $callback)
+    public static function get($path, $handler)
     {
-        static::register('GET', $path, $callback);
+        static::register('GET', $path, $handler);
     }
 
     /**
      * Helper function to register a POST request.
      *
      * @param string $path
-     * @param closure $callback
+     * @param any $handler
      * @return void
      */
-    public static function post($path, Closure $callback)
+    public static function post($path, $handler)
     {
-        static::register('POST', $path, $callback);
+        static::register('POST', $path, $handler);
     }
 
     /**
      * Helper function to register a PATCH request.
      *
      * @param string $path
-     * @param closure $callback
+     * @param any $handler
      * @return void
      */
-    public static function patch($path, Closure $callback)
+    public static function patch($path, $handler)
     {
-        static::register('PATCH', $path, $callback);
+        static::register('PATCH', $path, $handler);
     }
 
     /**
@@ -54,17 +54,45 @@ class Route
      * @param string $method
      * @param string $request
      */
-    public static function direct($method, $request)
+    public static function direct(Request $request)
     {
 
-        require 'routes.php';
+        require __BASEDIR__ . '/app/routes.php';
+        $key = static::stripSlashes($request->uri);
 
-        $request    = static::stripSlashes($request);
-        $executable = isset(static::$routes[$method][$request]) && static::$routes[$method][$request] instanceof Closure;
-
-        if ($executable) {
-            static::$routes[$method][$request]();
+        if (!isset(static::$routes[$request->method][$key])) {
+            return;
         }
+
+        static::boot(static::$routes[$request->method][$key], $request);
+    }
+
+    /**
+     * Runs a route given the specified request
+     * @param any $policy
+     */
+    protected static function boot($policy, Request $request)
+    {
+        // todo: add integrity checks in function loadController
+        switch (gettype($policy)) {
+            case 'string':
+                $command   = explode('@', $policy);
+                $className = '\\App\\Controllers\\' . $command[0];
+                (new $className($request))->{$command[1] ?? 'index'}();
+                break;
+            default:
+                $policy();
+        }
+        exit;
+    }
+
+    /**
+     * Loads the controller given an @method
+     * @
+     */
+    protected static function loadController($command)
+    {
+
     }
 
     /**
@@ -75,11 +103,11 @@ class Route
      * @param closure $callback
      * @return void
      */
-    protected static function register($method, $path, Closure $callback)
+    protected static function register($method, $path, $handler)
     {
         $path = static::stripSlashes($path);
 
-        static::$routes[$method][$path] = $callback;
+        static::$routes[$method][$path] = $handler;
     }
 
     /**
