@@ -1,6 +1,6 @@
 <?php
 
-use Teapot\Configuration;
+use Express\Configuration;
 
 /**
  * Loads the configuration option based on an identifier passed.
