@@ -11,10 +11,7 @@
   ],
   "autoload": {
     "files": [
-      "base/utilities/debuggers.php",
-      "base/utilities/filters.php",
-      "base/utilities/inquirers.php",
-      "base/utilities/loaders.php"
+      "base/utilities/utilities.php"
     ],
     "psr-4": {
       "Express\\": "base/classes",
