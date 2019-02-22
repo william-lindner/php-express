@@ -38,4 +38,19 @@ abstract class Model
         exit(json_encode($contents));
     }
 
+    /**
+     * Requests an internal function from this
+     */
+
+    public function request($data)
+    {
+        $method = is_array($data) ? $data['request'] : $data;
+
+        if (!method_exists($this, $method)) {
+            throw new \Exception('Method requested does not exist in ' . get_class($this), 400);
+        }
+
+        $this->$method();
+    }
+
 }
