@@ -1,0 +1,6 @@
+<?php
+
+/**
+ * Route permissions
+ */
+return [];

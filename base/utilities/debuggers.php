@@ -1,7 +1,5 @@
 <?php
 
-use Express\Express;
-
 /**
  * Creates an output string to be echoed.
  * @param any $content
@@ -38,17 +36,7 @@ function dd($content)
  * @param string $output
  * @return void
  */
-function nprint($output)
+function nprint(string $output)
 {
     echo $output . '<br>';
-}
-
-/**
- * Loads the configuration option based on a key passed.
- * @param
- * @return any | bool
- */
-function config($key)
-{
-    return \Express\Express::config($key);
 }
