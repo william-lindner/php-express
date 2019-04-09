@@ -23,20 +23,9 @@ class Visitor
     {
         $_SESSION['user'] = $_SESSION['user'] ?? [];
 
-        // Note: No check for exists yet; will need it
-        $_SESSION['user']['ds_id'] = $_SESSION['_id'];
-
-        $defaults = Configuration::load('sessions');
+        $defaults = Configuration::load('user');
 
         array_walk($defaults, function ($attribute, $key) use ($data) {
-
-            //* TEMP Code to fix checks
-            if (strpos($key, 'is_') === 0) {
-                if (isset($data[$key])) {
-                    $data[$key] = (bool) $data[$key];
-                }
-            }
-
             $_SESSION['user'][$key] = $data[$key] ?? $attribute;
         });
 
