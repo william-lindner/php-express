@@ -70,7 +70,7 @@ class PDO extends \PDO
     public function insert(string $query, $params = [])
     {
         $this->run($query, $params, 'insert');
-        return $this->last_id = $this->lastInsertId();
+        return $this->last_id = $this->lastInsertId() ?: $this->found_rows;
     }
 
     /**
@@ -90,7 +90,7 @@ class PDO extends \PDO
     public function update(string $query, $params = [])
     {
         $this->run($query, $params, 'update');
-        return $this->last_id = $this->lastInsertId();
+        return $this->found_rows;
     }
 
     /**
