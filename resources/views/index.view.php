@@ -1,4 +1,3 @@
-
 <?php include __DIR__ . '/layout/head.view.php'?>
 
 <main class='express-wrapper'>
