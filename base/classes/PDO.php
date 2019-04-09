@@ -2,6 +2,12 @@
 
 namespace Express;
 
+/**
+ * While this PDO wrapper has a number of utility functions do keep in mind it
+ * is an extension of the standard PDO library, so you will mostly have available
+ * the core functions from that origin class. Use with caution.
+ *
+ */
 class PDO extends \PDO
 {
     const ENABLE_MULTI_LINE_QUERIES = false;
@@ -9,8 +15,6 @@ class PDO extends \PDO
     public $error      = [];
     public $found_rows = 0;
     public $last_id    = null;
-
-    // private static $instance; - considering making the class use singleton and static calls
 
     /**
      * Sets up the PDO class with the Express environment configuration.
@@ -47,8 +51,7 @@ class PDO extends \PDO
      */
     public function query(string $query)
     {
-        throw new \Exception('Query function within PDO is deprecated.', 400);
-        return false;
+        throw new \Exception('Query function within Express\PDO is deprecated.', 400);
     }
 
     /**
@@ -56,10 +59,10 @@ class PDO extends \PDO
      *
      * @return array
      */
-    public function select(string $query, $params = [])
+    public function select(string $query, $params = [], $fetchOptions = null)
     {
         $stmt = $this->run($query, $params, 'select');
-        return $stmt->fetchAll() ?: [];
+        return $stmt->fetchAll($fetchOptions) ?: [];
     }
 
     /**
