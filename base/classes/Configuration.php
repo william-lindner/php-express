@@ -55,7 +55,7 @@ class Configuration
     public static function setResources(string $baseDir)
     {
         $assets = json_decode(
-            @file_get_contents($baseDir . '/manifest.json'),
+            @file_get_contents($baseDir . '/mix-manifest.json'),
             true
         );
 
@@ -70,7 +70,7 @@ class Configuration
     public static function get($identifier)
     {
 
-        // TODO - rework parsing here to be able to protect config options
+        // TODO rework parsing here to be able to protect config options
         if (in_array($identifier, self::$guards)) {
             return false;
         }
