@@ -43,7 +43,7 @@ abstract class Controller
             throw new \Exception('Method requested does not exist in ' . get_class($this), 400);
         }
 
-        $this->$method();
+        $this->$method($data);
     }
 
 }
