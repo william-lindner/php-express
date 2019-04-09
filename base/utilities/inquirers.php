@@ -13,15 +13,6 @@ function config(string $identifier)
 }
 
 /**
- * Accesses the session super global in easy to use function.
- *
- */
-function session(string $dotPattern)
-{
-    // return dotseek($dotPattern, $_SESSION);
-}
-
-/**
  * Access information about the user of the site.
  */
 function user(string $key = null)
