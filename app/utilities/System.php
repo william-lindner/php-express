@@ -17,7 +17,7 @@ class System
      */
     public static function checkInsert($id)
     {
-        if (!$testInsert) {
+        if (!$id) {
             ob_clean();
             http_response_code(400);
             header('HTTP/1.1 400 Bad Request');
