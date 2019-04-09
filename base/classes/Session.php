@@ -39,7 +39,6 @@ class Session
         );
         ini_set('session.cookie_secure', 1);
 
-        // session_set_cookie_params((self::DEFAULT_EXPIRY), '/', '.' . 'localhost', true);
         session_name(config('session.name') ?: 'my-session');
     }
 

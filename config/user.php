@@ -4,5 +4,8 @@
  * The default user session variables
  */
 return [
-    'firstName' => null,
+    'id'        => null,
+    'firstName' => '',
+    'lastName'  => '',
+    'name'      => '',
 ];
