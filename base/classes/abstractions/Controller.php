@@ -11,12 +11,10 @@ abstract class Controller
         $this->request = $request;
     }
 
-    protected function httpError($reason = false, $code = 418)
+    protected function httpError($reason = false, int $code = 400)
     {
-
         $protocol = $_SERVER["SERVER_PROTOCOL"] ?? 'HTTP/1.1';
-        $reason   = $reason ?: 'No Tea';
-        $code     = (int) $code;
+        $reason   = (string) $reason ?: 'Unknown Error';
 
         ob_clean();
         header("$protocol $code $reason", true, $code);
