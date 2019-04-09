@@ -1,6 +1,7 @@
 [server]
 environment=dev ;dev | prod
 display_errors=0
+error_reporting=E_STRICT
 timezone=America/Chicago
 
 ; mysql is only supported

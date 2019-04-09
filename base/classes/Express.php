@@ -40,6 +40,7 @@ final class Express
         Configuration::setup(Express::$baseDir);
 
         ini_set('display_errors', config('server.display_errors'));
+        error_reporting(config('server.error_reporting'));
     }
 
     /**
@@ -105,18 +106,7 @@ final class Express
     {
         $this->runMiddleware('before');
         Route::direct($this->request);
-    }
-
-    /**
-     * Logs out a user.
-     */
-    public function end($closure = null)
-    {
-        Session::stop();
-
-        if ($closure instanceof \Closure) {
-            $closure();
-        }
+        return $this;
     }
 
     public function __debugInfo()
