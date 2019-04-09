@@ -9,4 +9,18 @@
   width: 100vw;
   align-items: center;
   justify-content: center;
+  position: relative;
+}
+
+.express-wrapper__background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #808080;
+  -webkit-clip-path: polygon(70% 0%, 100% 0%, 100% 100%, 27% 100%);
+          clip-path: polygon(70% 0%, 100% 0%, 100% 100%, 27% 100%);
+}
+
+.express-wrapper__logo {
+  z-index: 1;
 }
