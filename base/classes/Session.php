@@ -21,16 +21,26 @@ class Session
     private static function configure()
     {
 
-        // todo: load dynamically
-        ini_set('session.gc_maxlifetime', (self::DEFAULT_EXPIRY));
-        ini_set('session.cookie_lifetime', (self::DEFAULT_EXPIRY));
-        ini_set('session.cookie_httponly', 1);
+        ini_set(
+            'session.gc_maxlifetime',
+            (config('session.max_lifetime') ?? self::DEFAULT_EXPIRY)
+        );
+        ini_set(
+            'session.cookie_lifetime',
+            (config('session.max_lifetime') ?? self::DEFAULT_EXPIRY)
+        );
+        ini_set(
+            'session.cookie_httponly', 1
+        );
         ini_set('session.use_trans_sid', 0);
-        ini_set('session.use_only_cookies', 1);
+        ini_set(
+            'session.use_only_cookies',
+            config('session.use_only_cookies') ?? 1
+        );
         ini_set('session.cookie_secure', 1);
 
         // session_set_cookie_params((self::DEFAULT_EXPIRY), '/', '.' . 'localhost', true);
-        session_name(config('session.name') ?: 'my-session');
+        session_name(config('session.name') ?? 'my-session');
     }
 
     /**
