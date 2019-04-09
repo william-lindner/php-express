@@ -41,7 +41,6 @@ abstract class Model
     /**
      * Requests an internal function from this
      */
-
     public function request($data)
     {
         $method = is_array($data) ? $data['request'] : $data;
