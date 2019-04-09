@@ -24,8 +24,3 @@ path=/
 domain=
 samesite=Strict
 strict_mode=false
-
-[mail]
-hostname=
-username=
-password=
