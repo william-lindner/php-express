@@ -30,7 +30,7 @@ class View
 
     }
 
-    public function add(\Closure $function)
+    public function add()
     {
         //
     }

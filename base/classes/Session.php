@@ -20,6 +20,8 @@ class Session
 
     private static function configure()
     {
+
+        // todo: load dynamically
         ini_set('session.gc_maxlifetime', (self::DEFAULT_EXPIRY));
         ini_set('session.cookie_lifetime', (self::DEFAULT_EXPIRY));
         ini_set('session.cookie_httponly', 1);

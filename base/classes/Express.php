@@ -50,6 +50,7 @@ final class Express
     public function beforeRoute($middleware)
     {
         $this->useMiddleware('before', $middleware);
+        return $this;
     }
 
     /**
@@ -60,6 +61,7 @@ final class Express
     public function beforeEnd($middleware)
     {
         $this->useMiddleware('after', $middleware);
+        return $this;
     }
 
     /**
@@ -108,12 +110,13 @@ final class Express
     /**
      * Logs out a user.
      */
-    public function end()
+    public function end($closure = null)
     {
-        $this->runMiddleware('after');
         Session::stop();
-        view('system/logout');
-        die;
+
+        if ($closure instanceof \Closure) {
+            $closure();
+        }
     }
 
     public function __debugInfo()
@@ -123,6 +126,11 @@ final class Express
             'info'    => 'Here is my handle. Here is my spout.',
             'baseDir' => static::$baseDir,
         ];
+    }
+
+    public function __destruct()
+    {
+        $this->runMiddleware('after');
     }
 
 }
