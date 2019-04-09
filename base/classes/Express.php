@@ -112,9 +112,10 @@ final class Express
     public function __debugInfo()
     {
         return [
-            'status'  => 'Express',
-            'info'    => 'Here is my handle. Here is my spout.',
-            'baseDir' => static::$baseDir,
+            'status'     => 'Express',
+            'info'       => 'Come with me if you want to live.',
+            'middleware' => $this->middleware,
+            'baseDir'    => static::$baseDir,
         ];
     }
 
