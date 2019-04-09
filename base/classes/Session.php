@@ -50,7 +50,7 @@ class Session
     public static function start()
     {
         if (session_status() === PHP_SESSION_ACTIVE) {
-            return;
+            return true;
         }
 
         self::configure();
