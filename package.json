@@ -4,7 +4,12 @@
   "description": "A lightweight MVC framework developed to solidify my understanding of what is happening under the hood of popular frameworks.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +23,12 @@
   },
   "homepage": "https://github.com/william-lindner/Express#readme",
   "dependencies": {
+    "cross-env": "^5.2.0",
+    "laravel-mix": "^4.0.15",
     "vue": "^2.6.6"
+  },
+  "devDependencies": {
+    "sass": "^1.18.0",
+    "sass-loader": "^7.1.0"
   }
 }

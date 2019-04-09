@@ -7,6 +7,7 @@
   <title>PHP Express</title>
 
   <!-- styles -->
+  <link rel="stylesheet" href="/css/express.css">
 
 </head>
 

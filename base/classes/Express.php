@@ -24,7 +24,11 @@ final class Express
      */
     public function __construct(Request $request, Visitor $visitor)
     {
-        self::$baseDir = defined('__BASEDIR__') ? __BASEDIR__ : $_SERVER['DOCUMENT_ROOT'] . '/..';
+        if (!defined('__BASEDIR__')) {
+            define('__BASEDIR__', $_SERVER['DOCUMENT_ROOT'] . '/..');
+        }
+
+        self::$baseDir = __BASEDIR__;
 
         $this->request = $request;
         $this->visitor = $visitor;

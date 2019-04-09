@@ -1,9 +1,8 @@
 
-<?php include __DIR__ . '/partials/head.view.php';?>
+<?php include __DIR__ . '/layout/head.view.php'?>
 
-<main>
-    <h1>Index</h1>
-    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Molestiae mollitia maiores laboriosam quibusdam odit adipisci voluptatibus illo ut consequatur eaque. Quibusdam cumque earum ipsam. Illum ad voluptatibus corporis quaerat est.</p>
+<main class='express-wrapper'>
+    <img class='express-wrapper__logo' src="/img/logo.png" alt="">
 </main>
 
-<?php include __DIR__ . '/partials/foot.view.php';?>
+<?php include __DIR__ . '/layout/foot.view.php'?>
