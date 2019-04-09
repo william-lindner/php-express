@@ -56,29 +56,52 @@ class Route
      */
     public static function direct(Request $request)
     {
-
-        require __BASEDIR__ . '/app/routes.php';
+        require __BASEDIR__ . '/app/routes/web.php';
         $key = static::stripSlashes($request->uri);
 
         if (!isset(static::$routes[$request->method][$key])) {
             return;
         }
 
-        static::boot(static::$routes[$request->method][$key], $request);
+        // todo - make this regex instead of repeated str_replace
+        $getKeys = str_replace(['{', '}'], '-', $key);
+        $getKeys = str_replace('--', '-', $getKeys);
+        $getKeys = explode('-', $getKeys);
+        array_shift($getKeys);
+        array_pop($getKeys);
+
+        $data = [];
+
+        foreach ($getKeys as $getKey) {
+            if (!isset($request->get[$getKey])) {
+                throw new \Exception('Parameter expected did not match route pattern.', 404);
+                continue;
+            }
+
+            $data[$getKey] = $request->get[$getKey];
+        }
+
+        static::boot(static::$routes[$request->method][$key], $request, $data);
     }
 
     /**
      * Runs a route given the specified request
      * @param any $policy
      */
-    protected static function boot($policy, Request $request)
+    protected static function boot($policy, Request $request, array $data = [])
     {
         // todo: add integrity checks in function loadController
         switch (gettype($policy)) {
             case 'string':
                 $command   = explode('@', $policy);
                 $className = '\\App\\Controllers\\' . $command[0];
-                (new $className($request))->{$command[1] ?? 'index'}();
+                $instance  = new $className($request);
+
+                if (!empty($data)) {
+                    $instance->{$command[1]}($data);
+                } else {
+                    $instance->{$command[1]}();
+                }
                 break;
             default:
                 $policy();
