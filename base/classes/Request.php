@@ -19,7 +19,13 @@ class Request implements \IteratorAggregate
         $this->data['host']   = $data['HTTP_HOST'] ?? $_SERVER['HTTP_HOST'];
         $this->data['server'] = $data['SERVER_NAME'] ?? $_SERVER['SERVER_NAME'];
 
-        $this->data['uri'] = explode('?', $this->data['uri'])[0];
+        // todo - rewrite this with a single pattern
+        $uriData = preg_split('/\?|&/', $this->data['uri']);
+        $uri     = array_shift($uriData);
+        $uri .= implode('', preg_replace('/(^.+)(=)(.+)/', '{$1}', $uriData));
+        $this->data['uri'] = $uri;
+
+        // $uri = preg_replace('/(\?)(\w+)(=)(.+)/', '{$2}', $this->data['uri']);
 
         if (!empty($_POST)) {
             $_POST = sanitize($_POST);
