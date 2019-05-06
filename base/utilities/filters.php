@@ -3,6 +3,7 @@
 /**
  * Sanitizes a data array request by removing HTML elements
  *
+ * @param $set
  */
 function sanitize(array $set)
 {

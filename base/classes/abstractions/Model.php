@@ -10,9 +10,10 @@ abstract class Model
 
     private $data;
 
-    public function __construct()
+    public function __construct($data = [])
     {
-        $this->db = new PDO();
+        $this->db   = new PDO();
+        $this->data = $data;
     }
 
 }

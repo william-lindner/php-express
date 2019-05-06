@@ -1,6 +1,6 @@
 <?php
 
-use Teapot\Configuration;
+use Express\Configuration;
 
 /**
  * Loads view contents from the view folder

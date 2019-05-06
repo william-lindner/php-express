@@ -63,23 +63,8 @@ class Route
             return;
         }
 
-        // todo - make this regex instead of repeated str_replace
-        $getKeys = str_replace(['{', '}'], '-', $key);
-        $getKeys = str_replace('--', '-', $getKeys);
-        $getKeys = explode('-', $getKeys);
-        array_shift($getKeys);
-        array_pop($getKeys);
-
+        // todo: build dynamic variables into the uri
         $data = [];
-
-        foreach ($getKeys as $getKey) {
-            if (!isset($request->get[$getKey])) {
-                throw new \Exception('Parameter expected did not match route pattern.', 404);
-                continue;
-            }
-
-            $data[$getKey] = $request->get[$getKey];
-        }
 
         static::boot(static::$routes[$request->method][$key], $request, $data);
     }
@@ -110,15 +95,6 @@ class Route
     }
 
     /**
-     * Loads the controller given an @method
-     * @
-     */
-    protected static function loadController($command)
-    {
-
-    }
-
-    /**
      * Registers a route with the routes array.
      *
      * @param string $method
@@ -141,6 +117,7 @@ class Route
      */
     protected static function stripSlashes($path)
     {
-        return trim($path, '/');
+        return str_replace('/', '', $path);
     }
+
 }

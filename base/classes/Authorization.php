@@ -12,6 +12,7 @@ class Authorization
      */
     public static function check(Request $request)
     {
+
         extract(
             self::getPermissions($request('uri'), Configuration::load('permissions'))
         );

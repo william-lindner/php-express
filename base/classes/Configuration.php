@@ -11,9 +11,12 @@ class Configuration
 
     public static $resources = [];
 
+    /**
+     *
+     */
     public static function load(string $file)
     {
-        $path = Express::$baseDir . "/config/{$file}.php";
+        $path = __BASEDIR__ . "/config/{$file}.php";
 
         if (!isset(self::$config[$file]) && file_exists($path)) {
             return require $path;
@@ -30,7 +33,6 @@ class Configuration
     public static function setup(string $baseDir)
     {
         self::setConfig($baseDir);
-        // self::setResources($baseDir);
 
         $timezone = self::$config['server']['timezone'] ?? 'America/Chicago';
         ini_set('date.timezone', $timezone);
