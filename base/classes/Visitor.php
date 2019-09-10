@@ -2,16 +2,28 @@
 
 namespace Express;
 
-class Visitor
+final class Visitor
 {
-    protected $data = [];
+    /**
+     * Stores information about the visitor, including guest status, etc.
+     */
+    protected $information = [
+        'guest' => true,
+    ];
+
+    private static $instance = null;
 
     /**
      * Builds the visitor data array with supplied data or blank data
      */
     public function __construct(array $data = [])
     {
-        $this->data = $data;
+        if (self::$instance) {
+            return self::$instance;
+        }
+
+        $this->information += $data;
+        return self::$instance = $this;
     }
 
     /**
@@ -39,7 +51,7 @@ class Visitor
      */
     public function role()
     {
-        return $this->data['role'] ?? 'Guest';
+        return $this->information['role'] ?? 'uest';
     }
 
     /**
@@ -47,13 +59,13 @@ class Visitor
      */
     public function mergeData(array $data = [])
     {
-        if (empty($this->data)) {
-            $this->data = $data;
+        if (empty($this->information)) {
+            $this->information = $data;
             return;
         }
 
         foreach ($data as $key => $attribute) {
-            $this->data[$key] = $_SESSION['user'][$key] = $attribute;
+            $this->information[$key] = $_SESSION['user'][$key] = $attribute;
         }
     }
 
@@ -62,7 +74,7 @@ class Visitor
      */
     public function __invoke($key)
     {
-        return $this->data[$key] ?? null;
+        return $this->information[$key] ?? null;
     }
 
     /**
@@ -70,6 +82,6 @@ class Visitor
      */
     public function __get($key)
     {
-        return $this->data[$key] ?? null;
+        return $this->information[$key] ?? null;
     }
 }

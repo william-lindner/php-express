@@ -2,8 +2,9 @@
 
 namespace Express;
 
-class Session
+final class Session
 {
+    public $data = [];
 
     const ONE_HOUR        = 3600;
     const ONE_MINUTE      = 60;
@@ -16,46 +17,57 @@ class Session
         'use_only_cookies' => 1,
     ];
 
-    protected $session;
+    protected static $instance = null;
 
-    private static function configure()
+    public function __construct()
     {
+        if (self::$instance) {
+            return self::$instance;
+        }
 
+        $this->start();
+        $this->regenerate();
+        return self::$instance = $this;
+    }
+
+    private function start()
+    {
+        $this->configure();
+        session_start([
+            'read_and_close' => true,
+        ]);
+        $this->data = $_SESSION;
+    }
+
+    private function configure()
+    {
         ini_set(
             'session.gc_maxlifetime',
-            (config('session.max_lifetime') ?? self::DEFAULT_EXPIRY)
+            config('session.max_lifetime', self::DEFAULT_EXPIRY)
         );
         ini_set(
             'session.cookie_lifetime',
-            (config('session.max_lifetime') ?? self::DEFAULT_EXPIRY)
+            config('session.max_lifetime', self::DEFAULT_EXPIRY)
         );
         ini_set(
-            'session.cookie_httponly', 1
+            'session.cookie_httponly',
+            1
         );
         ini_set('session.use_trans_sid', 0);
         ini_set(
             'session.use_only_cookies',
-            config('session.use_only_cookies') ?? 1
+            config('session.use_only_cookies', 1)
         );
         ini_set('session.cookie_secure', 1);
 
-        session_name(config('session.name') ?: 'my-session');
+        session_name(config('session.name', 'express'));
     }
 
-    /**
-     * Builds the session configuration from constructor and starts the session
-     *
-     * @return bool
-     */
-    public static function start()
+    public function close()
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            return true;
-        }
-
-        self::configure();
-
-        return session_start();
+        session_start();
+        $_SESSION = $this->data;
+        session_write_close();
     }
 
     /**
@@ -63,17 +75,24 @@ class Session
      *
      * @return bool
      */
-    public static function stop()
+    public function stop()
     {
-        static::start();
+        if (!(session_status() === PHP_SESSION_ACTIVE)) {
+            return true;
+        }
 
         session_unset();
         session_destroy();
         session_abort();
 
-        setcookie(config('session.name'), '', time() - self::ONE_HOUR);
-
         return !(session_status() === PHP_SESSION_ACTIVE);
+    }
+
+    public function destroy()
+    {
+        $this->close();
+        $this->stop();
+        setcookie(config('session.name', 'express'), '', time() - self::ONE_HOUR);
     }
 
     /**
@@ -81,16 +100,28 @@ class Session
      *
      * @return void
      */
-    public static function regenerate()
+    public function regenerate()
     {
-        if (!isset($_SESSION['_id_expires_at'])) {
-            $_SESSION['_id_expires_at'] = time();
+        $time = time();
+
+        if (!isset($this->data['_id_expires_at'])) {
+            $this->data['_id_expires_at'] = $time;
             return;
         }
 
-        if ($_SESSION['_id_expires_at'] + self::ONE_HOUR / 2 < time()) {
+        if ($this->data['_id_expires_at'] + self::ONE_HOUR / 2 < $time) {
             session_regenerate_id(true);
-            $_SESSION['_id_expires_at'] = time();
+            $this->data['_id_expires_at'] = $time;
         }
+    }
+
+    public function __debugInfo()
+    {
+        return $this->data;
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }

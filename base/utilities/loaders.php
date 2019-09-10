@@ -1,6 +1,7 @@
 <?php
 
 use Express\Configuration;
+use Express\View;
 
 /**
  * Loads view contents from the view folder
@@ -9,17 +10,7 @@ use Express\Configuration;
  */
 function view(string $file, array $data = [])
 {
-    global $request;
-
-    $view_path = __DIR__ . '/../../resources/views/';
-    $file      = strpos($file, '.view.php') ? $file : $file . '.view.php';
-
-    if (!file_exists($view_path . $file)) {
-        throw new \Exception('Unable to locate view.', 418);
-    }
-
-    extract($data);
-    require_once $view_path . $file;
+    return (new View($file, $data))->render();
 };
 
 /**
@@ -54,5 +45,4 @@ function resource(string $type, string $which)
 
     $resource = '/includes/' . $resource;
     echo implode($resource, $templates[$type]);
-
 }

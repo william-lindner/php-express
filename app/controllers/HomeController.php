@@ -7,13 +7,10 @@ use Express\Traits\ViewHandler;
 
 class HomeController extends Controller
 {
-
     use ViewHandler;
 
     public function index()
     {
-        // $this->loadPageNotFound();
-        view('index');
+        return view('index');
     }
-
 }

@@ -1,0 +1,6 @@
+<?php
+
+if($argv[1] === 'start') {
+    print('Express server started...' . PHP_EOL);
+    exec('cd public && php -S localhost:8888');
+}

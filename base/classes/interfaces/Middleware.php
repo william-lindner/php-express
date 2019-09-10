@@ -10,5 +10,5 @@ interface Middleware
     /**
      * Runs the middleware
      */
-    public static function execute(Request $request, Visitor $visitor);
+    public static function run(Request $request, Visitor $visitor);
 }

@@ -1,6 +1,6 @@
 <?php
 
-require './debuggers.php';
-require './filters.php';
-require './inquirers.php';
-require './loaders.php';
+require __DIR__ . '/debuggers.php';
+require __DIR__ . '/filters.php';
+require __DIR__ . '/inquirers.php';
+require __DIR__ . '/loaders.php';

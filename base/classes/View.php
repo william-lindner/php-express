@@ -2,32 +2,49 @@
 
 namespace Express;
 
-class View
+final class View
 {
-    protected static $instance;
+    protected static $instance = null;
 
     protected $data = [];
 
-    protected function __construct(array $data = [])
+    public function __construct(?string $view = null, array $data = [])
     {
-
-    }
-
-    public function instance(Request $request, string $viewPath, array $data = [])
-    {
-        if (isset(static::$instance)) {
-            static::$instance->add($data);
-            return static::$instance;
+        if (self::$instance) {
+            return self::$instance;
         }
 
-        static::$instance = new static($data);
+        $this->data            = $data;
 
-        return static::$instance;
+        if ($view) {
+            $this->view = $view;
+        }
+
+        return self::$instance = $this;
+    }
+
+    public function render(string $view = null)
+    {
+        $view_path = __VIEWDIR__ . '/';
+        $file      = str_replace('.', '/', $view ?? $this->view) . '.view.php';
+
+        if (!file_exists($view_path . $file)) {
+            throw new \Exception('Unable to locate view: ' . $view_path . $file, 400);
+        }
+
+        ob_start();
+        require_once $view_path . $file;
+        return ob_get_clean();
+    }
+
+    public function component(?string $component = null, array $data = [])
+    {
+        //
     }
 
     public function load(string $viewPath)
     {
-
+        //
     }
 
     public function add()
@@ -37,6 +54,11 @@ class View
 
     public function extract()
     {
+        //
+    }
 
+    public function __get($key)
+    {
+        return $this->data[$key] ?? null;
     }
 }

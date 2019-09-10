@@ -4,7 +4,6 @@ namespace Express;
 
 class Authorization
 {
-
     /**
      * Checks to see if a route is accessible to the user's permissions
      *
@@ -12,7 +11,6 @@ class Authorization
      */
     public static function check(Request $request)
     {
-
         extract(
             self::getPermissions($request('uri'), Configuration::load('permissions'))
         );
@@ -77,7 +75,6 @@ class Authorization
      */
     private static function test($userPermissions, array $requiredPermissions)
     {
-
         if (is_string($userPermissions)) {
             return in_array($userPermissions, $requiredPermissions);
         }
@@ -96,7 +93,6 @@ class Authorization
         }
 
         return $authorized;
-
     }
 
     /**
@@ -106,7 +102,7 @@ class Authorization
      */
     public static function appendRandomChar(string $input, int $length = 50)
     {
-        $characters = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charlength = strlen($characters);
 
         for ($i = 0; $i < $length; $i++) {

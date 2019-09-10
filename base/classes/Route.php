@@ -6,7 +6,6 @@ use \Closure;
 
 class Route
 {
-
     protected static $routes = [
         'GET'   => [],
         'POST'  => [],
@@ -16,8 +15,8 @@ class Route
     /**
      * Helper function to register a GET request.
      *
-     * @param string $path
-     * @param any $handler
+     * @param  string $path
+     * @param  any    $handler
      * @return void
      */
     public static function get($path, $handler)
@@ -28,8 +27,8 @@ class Route
     /**
      * Helper function to register a POST request.
      *
-     * @param string $path
-     * @param any $handler
+     * @param  string $path
+     * @param  any    $handler
      * @return void
      */
     public static function post($path, $handler)
@@ -40,8 +39,8 @@ class Route
     /**
      * Helper function to register a PATCH request.
      *
-     * @param string $path
-     * @param any $handler
+     * @param  string $path
+     * @param  any    $handler
      * @return void
      */
     public static function patch($path, $handler)
@@ -75,6 +74,8 @@ class Route
      */
     protected static function boot($policy, Request $request, array $data = [])
     {
+        $response = 'HEY';
+
         // todo: add integrity checks in function loadController
         switch (gettype($policy)) {
             case 'string':
@@ -83,23 +84,24 @@ class Route
                 $instance  = new $className($request);
 
                 if (!empty($data)) {
-                    $instance->{$command[1]}($data);
+                    $response = $instance->{$command[1]}($data);
                 } else {
-                    $instance->{$command[1]}();
+                    $response = $instance->{$command[1]}();
                 }
                 break;
             default:
-                $policy();
+                $response = $policy();
         }
-        exit;
+
+        exit($response);
     }
 
     /**
      * Registers a route with the routes array.
      *
-     * @param string $method
-     * @param string $path
-     * @param closure $callback
+     * @param  string  $method
+     * @param  string  $path
+     * @param  closure $callback
      * @return void
      */
     protected static function register($method, $path, $handler)
@@ -112,12 +114,11 @@ class Route
     /**
      * Removes the forward slashes at beginning and end of URI
      *
-     * @param string $path
+     * @param  string $path
      * @return string
      */
     protected static function stripSlashes($path)
     {
         return str_replace('/', '', $path);
     }
-
 }

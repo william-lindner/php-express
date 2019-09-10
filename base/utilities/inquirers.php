@@ -7,9 +7,9 @@ use Express\Configuration;
  * @param string
  * @return any | bool
  */
-function config(string $identifier)
+function config(string $identifier, $default = null)
 {
-    return Configuration::get($identifier);
+    return Configuration::get($identifier) ?: $default;
 }
 
 /**

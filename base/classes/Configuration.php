@@ -4,16 +4,12 @@ namespace Express;
 
 class Configuration
 {
-
     private static $config     = [];
     private static $guards     = [];
     private static $allowables = [];
 
     public static $resources = [];
 
-    /**
-     *
-     */
     public static function load(string $file)
     {
         $path = __BASEDIR__ . "/config/{$file}.php";
@@ -46,7 +42,12 @@ class Configuration
      */
     public static function setConfig(string $baseDir)
     {
-        self::$config = parse_ini_file($baseDir . '/.ini', true);
+        $ini_path = $baseDir . '/.ini';
+        if (!file_exists($ini_path)) {
+            copy($baseDir . '/.ini.example', $ini_path);
+        }
+
+        self::$config = parse_ini_file($ini_path, true);
     }
 
     /**
@@ -71,7 +72,6 @@ class Configuration
      */
     public static function get($identifier)
     {
-
         // TODO rework parsing here to be able to protect config options
         if (in_array($identifier, self::$guards)) {
             return false;
@@ -131,8 +131,6 @@ class Configuration
             }
 
             static::$resources['scripts'][$key] = $resources;
-
         });
-
     }
 }

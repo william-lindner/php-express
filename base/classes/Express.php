@@ -6,9 +6,6 @@ use Express\Interfaces\Middleware;
 
 final class Express
 {
-
-    public static $baseDir;
-
     protected $request;
     protected $visitor;
 
@@ -17,51 +14,58 @@ final class Express
         'after'  => [],
     ];
 
+    private static $instance = null;
+
     /**
      * Builds the environment for the Express server to run.
      *
      * @return Express
      */
-    public function __construct(Request $request, Visitor $visitor)
+    public function __construct(?Request $request = null)
     {
-        if (!defined('__BASEDIR__')) {
+        if (self::$instance) {
+            return self::$instance;
+        }
+
+        if (!defined('__BASEDIR__') && isset($_SERVER)) {
             define('__BASEDIR__', $_SERVER['DOCUMENT_ROOT'] . '/..');
         }
 
-        self::$baseDir = __BASEDIR__;
+        Exception::register();
 
         $this->request = $request;
-        $this->visitor = $visitor;
+        $session       = new Session();
 
-        Exception::register();
-        Session::start();
-        Session::regenerate();
+        if ($this->request) {
+            $this->visitor = new Visitor();
+        }
 
-        Configuration::setup(Express::$baseDir);
+        Configuration::setup(__BASEDIR__);
 
-        ini_set('display_errors', config('server.display_errors'));
-        error_reporting(config('server.error_reporting'));
+        ini_set('display_errors', config('server.display_errors', 1));
+        error_reporting(config('server.error_reporting', 1));
     }
 
     /**
-     * Register a middleware before preparations.
+     * Register a middleware to run before routing.
      *
-     * @return void
+     * @param  Closure|Middleware $middleware
+     * @return Express
      */
-    public function beforeRoute($middleware)
+    public function before($middleware)
     {
-        $this->useMiddleware('before', $middleware);
+        $this->use($middleware, 'before');
         return $this;
     }
 
     /**
-     * Register a middleware after preparations.
+     * Register a middleware after routing is completed.
      *
      * @return void
      */
-    public function beforeEnd($middleware)
+    public function after($middleware)
     {
-        $this->useMiddleware('after', $middleware);
+        $this->use($middleware, 'after');
         return $this;
     }
 
@@ -70,7 +74,7 @@ final class Express
      *
      * @return void
      */
-    protected function useMiddleware(string $type, $middleware)
+    protected function use($middleware, string $type = 'before')
     {
         if ($middleware instanceof \Closure || is_string($middleware) || is_object($middleware)) {
             $this->middleware[$type][] = $middleware;
@@ -82,10 +86,9 @@ final class Express
      *
      * @return void
      */
-    protected function runMiddleware(string $type)
+    protected function middleware(string $type)
     {
         foreach ($this->middleware[$type] as $middleware) {
-
             if ($middleware instanceof \Closure) {
                 $middleware($this->request, $this->visitor);
                 continue;
@@ -104,7 +107,7 @@ final class Express
      */
     public function run()
     {
-        $this->runMiddleware('before');
+        $this->middleware('before');
         Route::direct($this->request);
         return $this;
     }
@@ -112,16 +115,15 @@ final class Express
     public function __debugInfo()
     {
         return [
-            'status'     => 'Are you pumped?',
-            'info'       => 'Come with me if you want to live.',
             'middleware' => $this->middleware,
-            'baseDir'    => static::$baseDir,
+            'session'    => $this->session,
+            'request'    => $this->request,
+            'visitor'    => $this->visitor,
         ];
     }
 
     public function __destruct()
     {
-        $this->runMiddleware('after');
+        $this->middleware('after');
     }
-
 }

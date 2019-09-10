@@ -14,7 +14,7 @@ class Authorize extends Authorization implements Middleware, Gatekeeper
 
     use ViewHandler;
 
-    public static function execute(Request $request, Visitor $visitor)
+    public static function run(Request $request, Visitor $visitor)
     {
         if (!static::check($request)) {
             static::deny($request);

@@ -4,8 +4,9 @@ namespace Express;
 
 class Request implements \IteratorAggregate
 {
-
     private $data = [];
+
+    private static $instance = null;
 
     /**
      * Extracts specific data points of the super global SERVER for requests.
@@ -14,6 +15,10 @@ class Request implements \IteratorAggregate
      */
     public function __construct(array $data = [])
     {
+        if (self::$instance) {
+            return self::$instance;
+        }
+
         $this->data['uri']    = $data['REQUEST_URI'] ?? $_SERVER['REQUEST_URI'];
         $this->data['method'] = $data['REQUEST_METHOD'] ?? $_SERVER['REQUEST_METHOD'];
         $this->data['host']   = $data['HTTP_HOST'] ?? $_SERVER['HTTP_HOST'];
@@ -30,6 +35,7 @@ class Request implements \IteratorAggregate
         $this->data['get']  = $_GET;
         $this->data['post'] = $_POST;
 
+        return self::$instance = $this;
     }
 
     /**
@@ -69,7 +75,6 @@ class Request implements \IteratorAggregate
      */
     public function getIterator()
     {
-        return new \ArrayIterator($data);
+        return new \ArrayIterator($this->data);
     }
-
 }

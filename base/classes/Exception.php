@@ -5,7 +5,8 @@ namespace Express;
 class Exception
 {
     /**
-     * Registers the Exception handler within the class to output all exceptions in Express format.
+     * Registers the Exception handler within the class to output all exceptions
+     * in Express format.
      * @return void
      */
     public static function register()
@@ -19,7 +20,7 @@ class Exception
      */
     public static function handler($e)
     {
-        if (strtolower(config('server.environment')) !== 'prod') {
+        if (strtolower(config('server.environment', 'prod')) !== 'prod') {
             $code    = $e->getCode ?? 404;
             $message = $e->getMessage() ?? 'Unknown';
             dd([
@@ -27,5 +28,7 @@ class Exception
                 'Trace'     => debug_backtrace()[0]['args'],
             ]);
         }
+
+        // send a 400 by default
     }
 }
