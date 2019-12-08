@@ -10,7 +10,7 @@ use Express\View;
  */
 function view(string $file, array $data = [])
 {
-    return (new View($file, $data))->render();
+    return (new View($data))->render($file);
 };
 
 /**

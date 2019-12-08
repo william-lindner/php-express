@@ -8,17 +8,13 @@ final class View
 
     protected $data = [];
 
-    public function __construct(?string $view = null, array $data = [])
+    public function __construct(array $data = [])
     {
         if (self::$instance) {
             return self::$instance;
         }
 
-        $this->data            = $data;
-
-        if ($view) {
-            $this->view = $view;
-        }
+        $this->data = array_merge($this->data, $data);
 
         return self::$instance = $this;
     }
@@ -33,16 +29,11 @@ final class View
         }
 
         ob_start();
-        require_once $view_path . $file;
+        require $view_path . $file;
         return ob_get_clean();
     }
 
     public function component(?string $component = null, array $data = [])
-    {
-        //
-    }
-
-    public function load(string $viewPath)
     {
         //
     }
@@ -53,6 +44,15 @@ final class View
     }
 
     public function extract()
+    {
+        //
+    }
+
+    public static function resource(string $type, string $path, bool $absolute = false)
+    {
+    }
+
+    protected function scripts()
     {
         //
     }

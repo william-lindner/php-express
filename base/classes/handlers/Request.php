@@ -1,6 +1,6 @@
 <?php
 
-namespace Express;
+namespace Express\Handlers;
 
 class Request implements \IteratorAggregate
 {

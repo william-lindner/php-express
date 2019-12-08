@@ -5,8 +5,6 @@ namespace Express;
 class Configuration
 {
     private static $config     = [];
-    private static $guards     = [];
-    private static $allowables = [];
 
     public static $resources = [];
 
@@ -72,11 +70,6 @@ class Configuration
      */
     public static function get($identifier)
     {
-        // TODO rework parsing here to be able to protect config options
-        if (in_array($identifier, self::$guards)) {
-            return false;
-        }
-
         if (strpos($identifier, '.')) {
             $identifier   = explode('.', $identifier);
             $primary_key  = $identifier[0];

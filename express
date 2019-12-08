@@ -1,6 +1,8 @@
 <?php
 
-if($argv[1] === 'start') {
-    print('Express server started...' . PHP_EOL);
-    exec('cd public && php -S localhost:8888');
+if(in_array($argv[1], ['start', 'serve'])) {
+    $port = $argv[2] ?? 8888;
+    print('Express server starting...' . PHP_EOL);
+    print('Server running on 127.0.0.1:' . $port . PHP_EOL);
+    exec('cd public && php -S localhost:' . $port);
 }

@@ -3,6 +3,7 @@
 namespace Express;
 
 use \Closure;
+use Express\Handlers\Request;
 
 class Route
 {

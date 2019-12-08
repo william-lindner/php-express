@@ -46,7 +46,7 @@ class PDO extends \PDO
     /**
      * Prevents the use of PDO::query() by throwing an exception.
      * Internally use parent::query()
-     * @param string $sql
+     * @param  string $sql
      * @return bool
      */
     public function query(string $query)
@@ -103,7 +103,6 @@ class PDO extends \PDO
      */
     public function call(string $query, $params = [])
     {
-
         $stmt = $this->run($query, $params, 'call');
         return $stmt->fetchAll() ?: true;
     }
@@ -147,7 +146,7 @@ class PDO extends \PDO
     /**
      * Determines the SQL Query type by parsing the query.
      *
-     * @param string $query
+     * @param  string $query
      * @return string
      */
     protected function queryType(string $query)
@@ -169,7 +168,8 @@ class PDO extends \PDO
 
         if ($type !== $expectation) {
             throw new \PDOException(
-                "An invalid request was made. Expected '{$expectation}' and made '{$type}.'", 400
+                "An invalid request was made. Expected '{$expectation}' and made '{$type}.'",
+                400
             );
         }
     }
@@ -191,14 +191,14 @@ class PDO extends \PDO
 
         if ($bindCount !== $paramCount) {
             throw new \PDOException(
-                "Parameter mismatch! Received {$bindCount} bind params and {$paramCount} params", 400
+                "Parameter mismatch! Received {$bindCount} bind params and {$paramCount} params",
+                400
             );
         }
         $params = $this->castBooleanParams($params);
         $params = $this->castNullParams($params);
 
         return $params;
-
     }
 
     /**
@@ -208,7 +208,6 @@ class PDO extends \PDO
      */
     protected function castBooleanParams(array $params)
     {
-
         if (empty($params)) {
             return;
         }

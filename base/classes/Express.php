@@ -21,7 +21,7 @@ final class Express
      *
      * @return Express
      */
-    public function __construct(?Request $request = null)
+    public function __construct(?Handlers\Request $request = null)
     {
         if (self::$instance) {
             return self::$instance;
@@ -31,7 +31,7 @@ final class Express
             define('__BASEDIR__', $_SERVER['DOCUMENT_ROOT'] . '/..');
         }
 
-        Exception::register();
+        Handlers\Exception::register();
 
         $this->request = $request;
         $session       = new Session();

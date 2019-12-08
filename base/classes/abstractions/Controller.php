@@ -13,13 +13,15 @@ abstract class Controller
 
     protected function httpError($reason = false, int $code = 400)
     {
-        $protocol = $_SERVER["SERVER_PROTOCOL"] ?? 'HTTP/1.1';
+        $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
         $reason   = (string) $reason ?: 'Unknown Error';
 
         ob_clean();
         header("$protocol $code $reason", true, $code);
         http_response_code($code);
     }
+
+    
 
     /**
      * Allows for JSON object echo within APIs
@@ -29,7 +31,7 @@ abstract class Controller
     {
         ob_clean();
         header('Content-Type: application/json;charset=utf-8');
-        exit(json_encode($contents));
+        return json_encode($contents);
     }
 
     /**
@@ -45,5 +47,4 @@ abstract class Controller
 
         $this->$method($data);
     }
-
 }

@@ -94,20 +94,4 @@ class Authorization
 
         return $authorized;
     }
-
-    /**
-     * Appends a random set of characters based on a provided length to a string.
-     *
-     * @return string
-     */
-    public static function appendRandomChar(string $input, int $length = 50)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charlength = strlen($characters);
-
-        for ($i = 0; $i < $length; $i++) {
-            $input .= $characters[rand(0, $charlength - 1)];
-        }
-        return $input;
-    }
 }

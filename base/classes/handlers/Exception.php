@@ -1,6 +1,6 @@
 <?php
 
-namespace Express;
+namespace Express\Handlers;
 
 class Exception
 {
@@ -11,7 +11,7 @@ class Exception
      */
     public static function register()
     {
-        set_exception_handler(['\\Express\\Exception', 'handler']);
+        set_exception_handler(['\\Express\\Handlers\\Exception', 'handler']);
     }
 
     /**

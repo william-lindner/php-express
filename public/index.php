@@ -1,7 +1,7 @@
 <?php
 
 use Express\Express;
-use Express\Request;
+use Express\Handlers\Request;
 
 define('__BASEDIR__', __DIR__ . '/..');
 define('__VIEWDIR__', __DIR__ . '/../resources/views');
