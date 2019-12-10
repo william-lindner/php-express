@@ -11,7 +11,6 @@ use Express\Visitor;
 
 class Authorize extends Authorization implements Middleware, Gatekeeper
 {
-
     use ViewHandler;
 
     public static function run(Request $request, Visitor $visitor)
@@ -23,7 +22,6 @@ class Authorize extends Authorization implements Middleware, Gatekeeper
 
     public static function deny(Request $request)
     {
-        $instance = new static;
-        $instance->loadPageNotFound();
+        (new static)->pageNotFound();
     }
 }

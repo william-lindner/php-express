@@ -28,7 +28,7 @@
     "vue": "^2.6.10"
   },
   "devDependencies": {
-    "sass": "^1.22.10",
+    "sass": "^1.23.7",
     "sass-loader": "^7.3.1"
   }
 }

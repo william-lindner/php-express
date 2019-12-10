@@ -8,6 +8,9 @@ class Configuration
 
     public static $resources = [];
 
+    /**
+     * //
+     */
     public static function load(string $file)
     {
         $path = __BASEDIR__ . "/config/{$file}.php";

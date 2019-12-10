@@ -3,7 +3,8 @@
 namespace Express;
 
 use \Closure;
-use Express\Handlers\Request;
+use Express\Request;
+use Express\Handlers\ClosureBuilder;
 
 class Route
 {
@@ -60,6 +61,7 @@ class Route
         $key = static::stripSlashes($request->uri);
 
         if (!isset(static::$routes[$request->method][$key])) {
+            throw new Express\Exception\RouteNotFound('');
             return;
         }
 
@@ -75,26 +77,37 @@ class Route
      */
     protected static function boot($policy, Request $request, array $data = [])
     {
-        $response = 'HEY';
-
         // todo: add integrity checks in function loadController
         switch (gettype($policy)) {
             case 'string':
-                $command   = explode('@', $policy);
-                $className = '\\App\\Controllers\\' . $command[0];
+                [$className, $command]   = explode('@', $policy);
+
+                $className  = '\\App\\Controllers\\' . $className;
+                $reflection = new \ReflectionMethod($className, $command);
+
+                dump(compact('className', 'command'));
+
+                dd($reflection->getParameters());
+
                 $instance  = new $className($request);
 
                 if (!empty($data)) {
-                    $response = $instance->{$command[1]}($data);
+                    $response = $instance->{$command}($data);
                 } else {
-                    $response = $instance->{$command[1]}();
+                    $response = $instance->{$command}();
                 }
                 break;
             default:
-                $response = $policy();
+                // $policy($request, 1);
+                $runner = new ClosureBuilder($policy);
         }
 
-        exit($response);
+        exit($runner->load());
+    }
+
+    protected static function classHandler(string $policy)
+    {
+        $reflection = new \ReflectionMethod($className, $command);
     }
 
     /**

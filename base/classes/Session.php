@@ -4,6 +4,12 @@ namespace Express;
 
 final class Session
 {
+    /**
+     * Stores the session data in a mutable state, so that the super global
+     * is only ever accessed as read only.
+     *
+     * @var array
+     */
     public $data = [];
 
     const ONE_HOUR        = 3600;
@@ -25,11 +31,14 @@ final class Session
             return self::$instance;
         }
 
-        $this->start();
-        $this->regenerate();
-        return self::$instance = $this;
+        return self::$instance = $this->start();
     }
 
+    /**
+     * Starts the session as read and close, saving the data to a local variable
+     *
+     * @return Session
+     */
     private function start()
     {
         $this->configure();
@@ -37,6 +46,8 @@ final class Session
             'read_and_close' => true,
         ]);
         $this->data = $_SESSION;
+
+        return $this->regenerate();
     }
 
     private function configure()
@@ -68,6 +79,7 @@ final class Session
         session_start();
         $_SESSION = $this->data;
         session_write_close();
+        return $this;
     }
 
     /**
@@ -88,6 +100,11 @@ final class Session
         return !(session_status() === PHP_SESSION_ACTIVE);
     }
 
+    /**
+     * Destroys the session and unsets any information related to it
+     *
+     * @return void
+     */
     public function destroy()
     {
         $this->close();
@@ -106,13 +123,15 @@ final class Session
 
         if (!isset($this->data['_id_expires_at'])) {
             $this->data['_id_expires_at'] = $time;
-            return;
+            return $this;
         }
 
         if ($this->data['_id_expires_at'] + self::ONE_HOUR / 2 < $time) {
             session_regenerate_id(true);
             $this->data['_id_expires_at'] = $time;
         }
+
+        return $this;
     }
 
     public function __debugInfo()

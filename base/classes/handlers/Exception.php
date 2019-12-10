@@ -5,8 +5,17 @@ namespace Express\Handlers;
 class Exception
 {
     /**
+     * Cannot be instantiated externally
+     */
+    private function __construct()
+    {
+        //
+    }
+
+    /**
      * Registers the Exception handler within the class to output all exceptions
      * in Express format.
+     *
      * @return void
      */
     public static function register()
@@ -20,8 +29,8 @@ class Exception
      */
     public static function handler($e)
     {
-        if (strtolower(config('server.environment', 'prod')) !== 'prod') {
-            $code    = $e->getCode ?? 404;
+        if (config('server.environment', 'prod') !== 'prod') {
+            $code    = $e->getCode ?? 500;
             $message = $e->getMessage() ?? 'Unknown';
             dd([
                 'Exception' => "[{$code}] {$message}",

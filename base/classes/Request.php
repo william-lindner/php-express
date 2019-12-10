@@ -1,6 +1,6 @@
 <?php
 
-namespace Express\Handlers;
+namespace Express;
 
 class Request implements \IteratorAggregate
 {
@@ -69,7 +69,9 @@ class Request implements \IteratorAggregate
     }
 
     /**
-     * Required as implementation of IteratorAggregate. Allows iteration of instance.
+     * Required as implementation of IteratorAggregate.
+     *
+     * Allows iteration of instance.
      *
      * @return array
      */

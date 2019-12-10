@@ -4,7 +4,7 @@ namespace Express\Traits;
 
 trait ViewHandler
 {
-    public function loadPageNotFound()
+    public function pageNotFound()
     {
         ob_clean();
         http_response_code(404);

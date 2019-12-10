@@ -6,7 +6,7 @@ abstract class Controller
 {
     protected $request;
 
-    public function __construct($request)
+    public function __construct(Express\Request $request)
     {
         $this->request = $request;
     }
@@ -21,8 +21,6 @@ abstract class Controller
         http_response_code($code);
     }
 
-    
-
     /**
      * Allows for JSON object echo within APIs
      *
@@ -36,6 +34,8 @@ abstract class Controller
 
     /**
      * Requests an internal function from this
+     *
+     *
      */
     public function request($data)
     {

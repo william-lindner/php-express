@@ -6,6 +6,9 @@ use Express\Interfaces\Middleware;
 
 final class Express
 {
+    /**
+     * @var
+     */
     protected $request;
     protected $visitor;
 
@@ -21,7 +24,7 @@ final class Express
      *
      * @return Express
      */
-    public function __construct(?Handlers\Request $request = null)
+    public function __construct(?Request $request = null)
     {
         if (self::$instance) {
             return self::$instance;
@@ -40,7 +43,7 @@ final class Express
             $this->visitor = new Visitor();
         }
 
-        Configuration::setup(__BASEDIR__);
+        Configuration::setup(constant('__BASEDIR__') ?? __DIR__ . '/../');
 
         ini_set('display_errors', config('server.display_errors', 1));
         error_reporting(config('server.error_reporting', 1));
@@ -54,8 +57,7 @@ final class Express
      */
     public function before($middleware)
     {
-        $this->use($middleware, 'before');
-        return $this;
+        return $this->use($middleware, 'before');
     }
 
     /**
@@ -65,8 +67,7 @@ final class Express
      */
     public function after($middleware)
     {
-        $this->use($middleware, 'after');
-        return $this;
+        return $this->use($middleware, 'after');
     }
 
     /**
@@ -76,9 +77,23 @@ final class Express
      */
     protected function use($middleware, string $type = 'before')
     {
-        if ($middleware instanceof \Closure || is_string($middleware) || is_object($middleware)) {
+        if ($this->isValidMiddleware($middleware)) {
             $this->middleware[$type][] = $middleware;
         }
+
+        return $this;
+    }
+
+    /**
+     * Contains the conditions to validate middleware as valid
+     *
+     * @return boolean
+     */
+    protected function isValidMiddleware($middleware)
+    {
+        return $middleware instanceof \Closure
+            || is_string($middleware)
+            || is_object($middleware);
     }
 
     /**
@@ -108,6 +123,7 @@ final class Express
     public function run()
     {
         $this->middleware('before');
+
         Route::direct($this->request);
         return $this;
     }

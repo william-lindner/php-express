@@ -7,7 +7,7 @@ use Express\Request;
 interface Gatekeeper
 {
     /**
-     * Loads the view that should deny
+     * Denies access to the thing
      */
     public static function deny(Request $request);
 }
