@@ -46,6 +46,7 @@ class PDO extends \PDO
     /**
      * Prevents the use of PDO::query() by throwing an exception.
      * Internally use parent::query()
+     *
      * @param  string $sql
      * @return bool
      */

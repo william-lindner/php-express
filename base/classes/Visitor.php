@@ -51,7 +51,7 @@ final class Visitor
      */
     public function role()
     {
-        return $this->information['role'] ?? 'uest';
+        return $this->information['role'] ?? 'guest';
     }
 
     /**

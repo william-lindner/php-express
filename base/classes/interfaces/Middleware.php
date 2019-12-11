@@ -2,7 +2,7 @@
 
 namespace Express\Interfaces;
 
-use Express\Request;
+use Express\Http\Request;
 use Express\Visitor;
 
 interface Middleware

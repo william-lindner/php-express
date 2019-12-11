@@ -1,7 +1,7 @@
 <?php
 
 use Express\Route;
-use Express\Request;
+use Express\Http\Request;
 
 Route::get('/', 'HomeController@index');
 

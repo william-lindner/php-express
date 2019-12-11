@@ -3,13 +3,17 @@
 namespace Express;
 
 use Express\Interfaces\Middleware;
+use Express\Http\Request;
 
 final class Express
 {
     /**
-     * @var
+     *
+     *
+     * @var Express\Http\Request
      */
     protected $request;
+
     protected $visitor;
 
     protected $middleware = [

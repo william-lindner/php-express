@@ -6,7 +6,7 @@ abstract class Controller
 {
     protected $request;
 
-    public function __construct(Express\Request $request)
+    public function __construct(Express\Http\Request $request)
     {
         $this->request = $request;
     }

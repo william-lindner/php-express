@@ -5,7 +5,7 @@ namespace App\Middleware;
 use Express\Authorization;
 use Express\Interfaces\Gatekeeper;
 use Express\Interfaces\Middleware;
-use Express\Request;
+use Express\Http\Request;
 use Express\Traits\ViewHandler;
 use Express\Visitor;
 

@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use Express\Abstractions\Controller;
 use Express\Traits\ViewHandler;
-use Express\Request;
+use Express\Http\Request;
 
 class HomeController extends Controller
 {
