@@ -2,11 +2,15 @@
 
 namespace Express\Abstractions;
 
+use Express\Http\Request;
+
 abstract class Controller
 {
     protected $request;
 
-    public function __construct(Express\Http\Request $request)
+    private $response;
+
+    public function __construct(Request $request)
     {
         $this->request = $request;
     }
@@ -24,6 +28,9 @@ abstract class Controller
     /**
      * Allows for JSON object echo within APIs
      *
+     * @param $contents
+     *
+     * @return false|string
      */
     protected function jsonify($contents)
     {
@@ -36,6 +43,7 @@ abstract class Controller
      * Requests an internal function from this
      *
      *
+     * @throws \Exception
      */
     public function request($data)
     {

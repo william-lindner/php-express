@@ -14,7 +14,7 @@ let mix = require('laravel-mix');
 mix
   .setPublicPath('/')
   .setResourceRoot('public/')
-  .sass('resources/sass/main.scss', 'public/css/express.css')
+  .sass('resources/scss/main.scss', 'public/css/express.css')
   .options({
     processCssUrls: false
   })

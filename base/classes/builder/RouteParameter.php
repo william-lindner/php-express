@@ -2,6 +2,6 @@
 
 namespace Express\Builder;
 
-class Objects
+class RouteParameter
 {
 }

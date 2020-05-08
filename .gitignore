@@ -1,6 +1,7 @@
 .ds_store
+.idea
 node_modules
 .sass-cache
 .ini
-/vendor/
+vendor/
 mix-manifest.json

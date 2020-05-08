@@ -1,15 +1,25 @@
 <?php
 
-namespace Express\Handlers;
+namespace Express\Builder;
 
 use Express\Interfaces\RouteHandler;
 use Express\Exception\MissingParameter;
 use Express\Request;
 
-class ClosureBuilder implements RouteHandler
+class RouteClosure implements RouteHandler
 {
+    /**
+     *
+     *
+     * @var
+     */
     public $parameters = [];
 
+    /**
+     *
+     *
+     * @var
+     */
     protected $closure;
 
     public function __construct(\Closure $closure, $data = [])

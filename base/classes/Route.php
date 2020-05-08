@@ -4,7 +4,7 @@ namespace Express;
 
 use \Closure;
 use Express\Http\Request;
-use Express\Handlers\ClosureBuilder;
+use Express\Builder\RouteClosure;
 
 class Route
 {
@@ -99,7 +99,7 @@ class Route
                 break;
             default:
                 // $policy($request, 1);
-                $runner = new ClosureBuilder($policy);
+                $runner = new RouteClosure($policy);
         }
 
         exit($runner->load());

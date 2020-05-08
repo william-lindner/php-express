@@ -3,6 +3,7 @@
 namespace Express;
 
 use Express\Interfaces\Middleware;
+use Express\Handlers\Exception;
 use Express\Http\Request;
 
 final class Express
@@ -26,31 +27,22 @@ final class Express
     /**
      * Builds the environment for the Express server to run.
      *
-     * @return Express
+     * @param Request|null $request
      */
     public function __construct(?Request $request = null)
     {
-        if (self::$instance) {
-            return self::$instance;
-        }
-
         if (!defined('__BASEDIR__') && isset($_SERVER)) {
             define('__BASEDIR__', $_SERVER['DOCUMENT_ROOT'] . '/..');
         }
 
-        Handlers\Exception::register();
+        Exception::register();
+        Session::start();
 
-        $this->request = $request;
-        $session       = new Session();
-
-        if ($this->request) {
+        if ($this->request = $request) {
             $this->visitor = new Visitor();
         }
 
         Configuration::setup(constant('__BASEDIR__') ?? __DIR__ . '/../');
-
-        ini_set('display_errors', config('server.display_errors', 1));
-        error_reporting(config('server.error_reporting', 1));
     }
 
     /**
@@ -122,9 +114,9 @@ final class Express
     /**
      * Gets everything ready for a great cup of tea.
      *
-     * @return void
+     * @return Express
      */
-    public function run()
+    public function run() : Express
     {
         $this->middleware('before');
 
@@ -136,7 +128,6 @@ final class Express
     {
         return [
             'middleware' => $this->middleware,
-            'session'    => $this->session,
             'request'    => $this->request,
             'visitor'    => $this->visitor,
         ];

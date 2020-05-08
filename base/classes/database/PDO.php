@@ -1,6 +1,6 @@
 <?php
 
-namespace Express;
+namespace Express\Database;
 
 /**
  * While this PDO wrapper has a number of utility functions do keep in mind it

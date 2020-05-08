@@ -34,6 +34,9 @@ class Configuration
         $timezone = self::$config['server']['timezone'] ?? 'America/Chicago';
         ini_set('date.timezone', $timezone);
         date_default_timezone_set($timezone);
+
+        ini_set('display_errors', config('server.display_errors', 1));
+        error_reporting(config('server.error_reporting', 1));
     }
 
     /**
