@@ -4,17 +4,10 @@ namespace Express\Abstractions;
 
 abstract class Controller
 {
-    protected $request;
-
-    public function __construct(Express\Http\Request $request)
-    {
-        $this->request = $request;
-    }
-
-    protected function httpError($reason = false, int $code = 400)
+    protected function httpError(?string $reason = null, int $code = 400)
     {
         $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
-        $reason   = (string) $reason ?: 'Unknown Error';
+        $reason = (string) $reason ?: 'Unknown Error';
 
         ob_clean();
         header("$protocol $code $reason", true, $code);
@@ -24,27 +17,14 @@ abstract class Controller
     /**
      * Allows for JSON object echo within APIs
      *
+     * @param $contents
+     *
+     * @return false|string
      */
     protected function jsonify($contents)
     {
         ob_clean();
         header('Content-Type: application/json;charset=utf-8');
         return json_encode($contents);
-    }
-
-    /**
-     * Requests an internal function from this
-     *
-     *
-     */
-    public function request($data)
-    {
-        $method = is_array($data) ? $data['request'] : $data;
-
-        if (!method_exists($this, $method)) {
-            throw new \Exception('Method requested does not exist in ' . get_class($this), 400);
-        }
-
-        $this->$method($data);
     }
 }

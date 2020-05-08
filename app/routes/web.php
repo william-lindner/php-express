@@ -1,10 +1,15 @@
 <?php
 
-use Express\Route;
+use Express\Router;
 use Express\Http\Request;
 
-Route::get('/', 'HomeController@index');
+Router::get('/', 'HomeController@index');
 
-Route::get('/closure', function (Request $request, $rando = null) {
-    dd('closure ran!');
-});
+Router::get(
+    '/closure',
+    static function (Request $request, $rando = null) {
+        echo Express\Diagnostic::memory()->peak(false);
+        dump($request);
+        dd('closure ran!');
+    }
+);

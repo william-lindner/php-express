@@ -1,6 +1,6 @@
 <?php
 
-namespace Express;
+namespace Express\Database;
 
 /**
  * While this PDO wrapper has a number of utility functions do keep in mind it
@@ -12,12 +12,13 @@ class PDO extends \PDO
 {
     const ENABLE_MULTI_LINE_QUERIES = false;
 
-    public $error      = [];
+    public $error = [];
     public $found_rows = 0;
-    public $last_id    = null;
+    public $last_id = null;
 
     /**
      * Sets up the PDO class with the Express environment configuration.
+     *
      * @return static
      */
     public function __construct()
@@ -28,7 +29,7 @@ class PDO extends \PDO
          * There is a bit of PHP trickery here in that despite the parent class
          * being returned the instance will have access to the functions in this class as well.
          */
-        return parent::__construct(
+        parent::__construct(
             "mysql:dbname={$setting['database']};host={$setting['hostname']}",
             $setting['username'],
             $setting['password'],
@@ -47,7 +48,8 @@ class PDO extends \PDO
      * Prevents the use of PDO::query() by throwing an exception.
      * Internally use parent::query()
      *
-     * @param  string $sql
+     * @param string $sql
+     *
      * @return bool
      */
     public function query(string $query)
@@ -67,95 +69,34 @@ class PDO extends \PDO
     }
 
     /**
-     * INSERT content from a mysql database using prepared statement.
+     * Executes the SQL statement using prepared synatax.
      *
-     * @return int|bool
+     * @return \PDOStatement
      */
-    public function insert(string $query, $params = [])
+    protected function run(string $query, $params = [], string $type)
     {
-        $this->run($query, $params, 'insert');
-        return $this->last_id = $this->lastInsertId() ?: $this->found_rows;
+        $this->reset();
+        $this->verifyType($this->queryType($query), $type);
+        $params = $this->sanitizeParams($query, $params);
+
+        $stmt = $this->prepare($query);
+        $this->checkErrors($stmt);
+
+        $stmt->execute($params);
+        $this->found_rows = $stmt->rowCount();
+        return $stmt;
     }
 
     /**
-     * DELETE content from a mysql database using prepared statement.
+     * Sets the default values back to object attributes
      *
-     * @return int|bool
+     * @return void
      */
-    public function delete(string $query, $params = [])
+    protected function reset()
     {
-        $this->run($query, $params, 'delete');
-        return $this->last_id = $this->lastInsertId();
-    }
-
-    /**
-     * UPDATE content from a mysql database using prepared statement.
-     */
-    public function update(string $query, $params = [])
-    {
-        $this->run($query, $params, 'update');
-        return $this->found_rows;
-    }
-
-    /**
-     * Executes a call to a procedure in SQL.
-     *
-     * @return array|bool
-     */
-    public function call(string $query, $params = [])
-    {
-        $stmt = $this->run($query, $params, 'call');
-        return $stmt->fetchAll() ?: true;
-    }
-
-    /**
-     * Executes a show request in SQL.
-     *
-     * @return array
-     */
-    public function show(string $query, $params = [])
-    {
-        $stmt = $this->run($query, $params, 'show');
-        return $stmt->fetchAll() ?: [];
-    }
-
-    /**
-     * Returns the options for an enumerated column.
-     * Warning: Enumerated columns are to be used sparingly.
-     *
-     * @return array
-     */
-    public function enum(string $table, string $column)
-    {
-        $table = $this->stripSemicolon($table);
-
-        $row = $this->show(
-            "SHOW COLUMNS FROM $table LIKE ?",
-            $column
-        );
-
-        if (!$row) {
-            return $row;
-        }
-
-        $enum = str_replace('\'\'', '\'', $row[0]['Type']);
-        preg_match('/enum\(\'(.*)\'\)$/', $enum, $data);
-
-        return explode('\',\'', $data[1]);
-    }
-
-    /**
-     * Determines the SQL Query type by parsing the query.
-     *
-     * @param  string $query
-     * @return string
-     */
-    protected function queryType(string $query)
-    {
-        $query       = trim($query);
-        $starts_with = strtolower(substr($query, 0, 6));
-
-        return explode(' ', $starts_with)[0] ?? '';
+        $this->error = [];
+        $this->found_rows = 0;
+        $this->last_id = null;
     }
 
     /**
@@ -176,14 +117,29 @@ class PDO extends \PDO
     }
 
     /**
+     * Determines the SQL Query type by parsing the query.
+     *
+     * @param string $query
+     *
+     * @return string
+     */
+    protected function queryType(string $query)
+    {
+        $query = trim($query);
+        $starts_with = strtolower(substr($query, 0, 6));
+
+        return explode(' ', $starts_with)[0] ?? '';
+    }
+
+    /**
      * Verifies the parameters are ready for usage.
      *
      * @return array
      */
     protected function sanitizeParams(string $query, $params = [])
     {
-        $params     = is_array($params) ? $params : [$params];
-        $bindCount  = substr_count($query, '?');
+        $params = is_array($params) ? $params : [$params];
+        $bindCount = substr_count($query, '?');
         $paramCount = count($params);
 
         if (!(boolval($bindCount) || !empty($params))) {
@@ -214,7 +170,7 @@ class PDO extends \PDO
         }
 
         $truthiness = [true, 'true', 'TRUE', '1', 1];
-        $falsiness  = [false, 'false', 'FALSE', '0', 0];
+        $falsiness = [false, 'false', 'FALSE', '0', 0];
 
         $boolsToFix = array_merge($truthiness, $falsiness);
         $fixableSet = array_intersect($params, $boolsToFix);
@@ -262,34 +218,91 @@ class PDO extends \PDO
     }
 
     /**
-     * Executes the SQL statement using prepared synatax.
+     * INSERT content from a mysql database using prepared statement.
      *
-     * @return \PDOStatement
+     * @return int|bool
      */
-    protected function run(string $query, $params = [], string $type)
+    public function insert(string $query, $params = [])
     {
-        $this->reset();
-        $this->verifyType($this->queryType($query), $type);
-        $params = $this->sanitizeParams($query, $params);
-
-        $stmt = $this->prepare($query);
-        $this->checkErrors($stmt);
-
-        $stmt->execute($params);
-        $this->found_rows = $stmt->rowCount();
-        return $stmt;
+        $this->run($query, $params, 'insert');
+        return $this->last_id = $this->lastInsertId() ?: $this->found_rows;
     }
 
     /**
-     * Sets the default values back to object attributes
+     * DELETE content from a mysql database using prepared statement.
      *
-     * @return void
+     * @return int|bool
      */
-    protected function reset()
+    public function delete(string $query, $params = [])
     {
-        $this->error      = [];
-        $this->found_rows = 0;
-        $this->last_id    = null;
+        $this->run($query, $params, 'delete');
+        return $this->last_id = $this->lastInsertId();
+    }
+
+    /**
+     * UPDATE content from a mysql database using prepared statement.
+     */
+    public function update(string $query, $params = [])
+    {
+        $this->run($query, $params, 'update');
+        return $this->found_rows;
+    }
+
+    /**
+     * Executes a call to a procedure in SQL.
+     *
+     * @return array|bool
+     */
+    public function call(string $query, $params = [])
+    {
+        $stmt = $this->run($query, $params, 'call');
+        return $stmt->fetchAll() ?: true;
+    }
+
+    /**
+     * Returns the options for an enumerated column.
+     * Warning: Enumerated columns are to be used sparingly.
+     *
+     * @return array
+     */
+    public function enum(string $table, string $column)
+    {
+        $table = $this->stripSemicolon($table);
+
+        $row = $this->show(
+            "SHOW COLUMNS FROM $table LIKE ?",
+            $column
+        );
+
+        if (!$row) {
+            return $row;
+        }
+
+        $enum = str_replace('\'\'', '\'', $row[0]['Type']);
+        preg_match('/enum\(\'(.*)\'\)$/', $enum, $data);
+
+        return explode('\',\'', $data[1]);
+    }
+
+    /**
+     * Utility function to strip semicolons from the queries.
+     *
+     * @return string
+     */
+    public function stripSemicolon(string $string)
+    {
+        return preg_replace('/;+/', ';', $string);
+    }
+
+    /**
+     * Executes a show request in SQL.
+     *
+     * @return array
+     */
+    public function show(string $query, $params = [])
+    {
+        $stmt = $this->run($query, $params, 'show');
+        return $stmt->fetchAll() ?: [];
     }
 
     /**
@@ -304,16 +317,6 @@ class PDO extends \PDO
             throw new \Exception('Unable to identify the query type to run request.', 400);
         }
         return $this->{$functionName}($query, $params);
-    }
-
-    /**
-     * Utility function to strip semicolons from the queries.
-     *
-     * @return string
-     */
-    public function stripSemicolon(string $string)
-    {
-        return preg_replace('/;+/', ';', $string);
     }
 
     /**

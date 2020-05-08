@@ -1,29 +1,15 @@
 <?php
 
-/**
- * Sanitizes a data array request by removing HTML elements
- *
- * @param $set
- */
-function sanitize(array $set)
-{
-    return array_map(function ($point) {
-        if (is_array($point)) {
-            return sanitize($point);
-        }
-
-        if (is_string($point)) {
-            $point = strip_tags(trim($point));
-        }
-
-        return $point;
-    }, $set);
-}
-
-/**
- * Replaces spaces in a string with hyphens
- */
-function hyphenate(string $line)
-{
-    return str_replace(' ', '-', $line);
+if (!function_exists('sanitize')) {
+    /**
+     * Sanitizes a data array request by removing HTML elements
+     *
+     * @param $data
+     *
+     * @return array
+     */
+    function sanitize(array $data)
+    {
+        return Express\Http\Request::sanitize($data);
+    }
 }

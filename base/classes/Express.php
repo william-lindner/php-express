@@ -2,61 +2,48 @@
 
 namespace Express;
 
+use Closure;
+use ReflectionException;
 use Express\Interfaces\Middleware;
 use Express\Http\Request;
 
-final class Express
+class Express
 {
+
     /**
+     * The registered middleware for the Express server
      *
-     *
-     * @var Express\Http\Request
+     * @var array[]
      */
-    protected $request;
-
-    protected $visitor;
-
     protected $middleware = [
         'before' => [],
         'after'  => [],
     ];
 
-    private static $instance = null;
-
     /**
      * Builds the environment for the Express server to run.
      *
-     * @return Express
+     * @param Request|null $request
+     *
+     * @constructor
      */
     public function __construct(?Request $request = null)
     {
-        if (self::$instance) {
-            return self::$instance;
+        Configuration::setup();
+
+        Container::store('session', new Session());
+
+        if ($request !== null) {
+            Container::store('request', $request);
+            Container::store('visitor', new Visitor());
         }
-
-        if (!defined('__BASEDIR__') && isset($_SERVER)) {
-            define('__BASEDIR__', $_SERVER['DOCUMENT_ROOT'] . '/..');
-        }
-
-        Handlers\Exception::register();
-
-        $this->request = $request;
-        $session       = new Session();
-
-        if ($this->request) {
-            $this->visitor = new Visitor();
-        }
-
-        Configuration::setup(constant('__BASEDIR__') ?? __DIR__ . '/../');
-
-        ini_set('display_errors', config('server.display_errors', 1));
-        error_reporting(config('server.error_reporting', 1));
     }
 
     /**
      * Register a middleware to run before routing.
      *
-     * @param  Closure|Middleware $middleware
+     * @param Closure|Middleware $middleware
+     *
      * @return Express
      */
     public function before($middleware)
@@ -65,21 +52,14 @@ final class Express
     }
 
     /**
-     * Register a middleware after routing is completed.
-     *
-     * @return void
-     */
-    public function after($middleware)
-    {
-        return $this->use($middleware, 'after');
-    }
-
-    /**
      * Adds middleware to the before and after registrations
      *
-     * @return void
+     * @param        $middleware
+     * @param string $type
+     *
+     * @return Express
      */
-    protected function use($middleware, string $type = 'before')
+    protected function use($middleware, string $type = 'before') : Express
     {
         if ($this->isValidMiddleware($middleware)) {
             $this->middleware[$type][] = $middleware;
@@ -91,54 +71,78 @@ final class Express
     /**
      * Contains the conditions to validate middleware as valid
      *
+     * @param $middleware
+     *
      * @return boolean
      */
-    protected function isValidMiddleware($middleware)
+    protected function isValidMiddleware($middleware) : bool
     {
-        return $middleware instanceof \Closure
-            || is_string($middleware)
-            || is_object($middleware);
+        return $middleware instanceof \Closure || is_string($middleware);
     }
 
     /**
-     * Executes the middle ware of a specified type
+     * Register a middleware after routing is completed.
      *
-     * @return void
+     * @param $middleware
+     *
+     * @return Express
      */
-    protected function middleware(string $type)
+    public function after($middleware)
     {
-        foreach ($this->middleware[$type] as $middleware) {
-            if ($middleware instanceof \Closure) {
-                $middleware($this->request, $this->visitor);
-                continue;
-            }
-
-            if ($middleware instanceof Middleware || is_string($middleware)) {
-                $middleware::execute($this->request, $this->visitor);
-            }
-        }
+        return $this->use($middleware, 'after');
     }
 
     /**
      * Gets everything ready for a great cup of tea.
      *
      * @return void
+     * @throws Exception\RouteNotFound
+     * @throws ReflectionException
      */
-    public function run()
+    public function run() : void
     {
+        if (!$request = Container::retrieve('request')) {
+            // @todo - cmd
+            return;
+        }
+
         $this->middleware('before');
 
-        Route::direct($this->request);
-        return $this;
+        Router::direct($request);
+    }
+
+    /**
+     * Executes the middle ware of a specified type
+     *
+     * @param string $type
+     *
+     * @return void
+     */
+    protected function middleware(string $type) : void
+    {
+        foreach ($this->middleware[$type] as $middleware) {
+            if ($middleware instanceof \Closure) {
+
+                // @todo InjectionClosure
+                $middleware($this->request, $this->visitor);
+                continue;
+            }
+
+            if ($middleware instanceof Middleware) {
+
+                // @todo InjectionMethod
+                $middleware::execute($this->request, $this->visitor);
+            }
+        }
     }
 
     public function __debugInfo()
     {
         return [
             'middleware' => $this->middleware,
-            'session'    => $this->session,
-            'request'    => $this->request,
-            'visitor'    => $this->visitor,
+            'request'    => Container::retrieve('request'),
+            'visitor'    => Container::retrieve('visitor'),
+            'session'    => Container::retrieve('session'),
         ];
     }
 

@@ -2,81 +2,229 @@
 
 namespace Express\Http;
 
-class Request implements \IteratorAggregate
+class Request
 {
-    private $data = [];
-
-    private static $instance = null;
+    /**
+     * The full uri
+     *
+     * @var string
+     */
+    private $fullUri;
 
     /**
-     * Extracts specific data points of the super global SERVER for requests.
+     * A parsed uri without query params
      *
-     * @return Request
+     * @var string
      */
-    public function __construct(array $data = [])
+    private $uri;
+
+    /**
+     * The request method, i.e. POST, GET, PATCH, DELETE
+     *
+     * @var string
+     */
+    private $method;
+
+    /**
+     * Host information about the request
+     *
+     * @var string
+     */
+    private $host;
+
+    /**
+     * Server information
+     *
+     * @var string
+     */
+    private $server;
+
+    /**
+     * Stores the data from the request
+     *
+     * @var array
+     */
+    private $data = [];
+
+    /**
+     * The route instance for the request
+     *
+     * @var Route
+     */
+    private $route;
+
+    /**
+     * Extracts specific info points of the super global SERVER for requests.
+     *
+     * @param array $info
+     *
+     * @constructor
+     */
+    public function __construct(array $info = [])
     {
-        if (self::$instance) {
-            return self::$instance;
+        $this->fullUri = $info['REQUEST_URI'] ?? $_SERVER['REQUEST_URI'];
+        $this->uri = $this->parseUri($info['REQUEST_URI'] ?? $_SERVER['REQUEST_URI']);
+
+        $this->route = new Route($this->uri);
+
+        $this->method = $info['REQUEST_METHOD'] ?? $_SERVER['REQUEST_METHOD'];
+        //        $this->host = $info['HTTP_HOST'] ?? $_SERVER['HTTP_HOST'];
+
+        if (!empty($post = $_POST)) {
+            $post = static::sanitize($post);
+
+            $this->data = $post;
         }
 
-        $this->data['uri']    = $data['REQUEST_URI'] ?? $_SERVER['REQUEST_URI'];
-        $this->data['method'] = $data['REQUEST_METHOD'] ?? $_SERVER['REQUEST_METHOD'];
-        $this->data['host']   = $data['HTTP_HOST'] ?? $_SERVER['HTTP_HOST'];
-        $this->data['server'] = $data['SERVER_NAME'] ?? $_SERVER['SERVER_NAME'];
+        if (!empty($get = $_GET)) {
+            $get = static::sanitize($get);
 
-        if (!empty($_POST)) {
-            $_POST = sanitize($_POST);
+            $this->data = $get;
         }
-
-        if (!empty($_GET)) {
-            $_GET = sanitize($_GET);
-        }
-
-        $this->data['get']  = $_GET;
-        $this->data['post'] = $_POST;
-
-        return self::$instance = $this;
     }
 
     /**
-     * Allows for access to data variables through instance.
+     * Removes any get parameters from the uri string
+     *
+     * @param string $uri
      *
      * @return string
      */
-    public function __invoke(string $key)
+    protected function parseUri(string $uri) : string
     {
-        return $this->data[strtolower($key)];
+        if (($p = strpos($uri, '?')) === false) {
+            return $uri;
+        }
+
+        return substr($uri, 0, $p);
     }
 
     /**
-     * Exposes the data for debugging.
+     * Trims strings and removes bad data from the requests.
+     * Does this want to be it's own class?
+     *
+     * @param array $info
      *
      * @return array
+     * @api
      */
-    public function __debugInfo()
+    public static function sanitize(array $info) : array
+    {
+        return array_map(
+            static function ($attr) {
+                if (is_array($attr)) {
+                    return static::sanitize($attr);
+                }
+
+                if (is_string($attr)) {
+                    $attr = strip_tags(trim($attr));
+                }
+
+                return $attr;
+            },
+            $info
+        );
+    }
+
+    /**
+     * Getter to protect private property
+     *
+     * @return string
+     * @api
+     */
+    public function fullUri() : string
+    {
+        return $this->fullUri;
+    }
+
+    /**
+     * Getter to protect private property
+     *
+     * @return string
+     * @api
+     */
+    public function uri() : string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * Getter to protect private property from mutation
+     *
+     * @return string
+     * @api
+     */
+    public function method() : string
+    {
+        return $this->method;
+    }
+
+    /**
+     * Getter to protect the private property from mutation
+     *
+     * @return Route
+     * @api
+     */
+    public function route() : Route
+    {
+        return $this->route;
+    }
+
+    /**
+     * Returns all request data
+     *
+     * @return array
+     * @api
+     */
+    public function all() : array
     {
         return $this->data;
     }
 
     /**
-     * Instance getter returning data attributes
+     * Returns a specific key or a fallback
      *
-     * @return any
+     * @param string     $key
+     * @param mixed|null $fallback
+     *
+     * @return mixed|null
      */
-    public function __get(string $key)
+    public function input(string $key, $fallback = null)
     {
-        return $this->data[strtolower($key)] ?? null;
+        return $this->data[$key] ?? $fallback;
+    }
+
+    public function only($args)
+    {
+        // get only these from data
+    }
+
+    public function except($args)
+    {
+        // get all data except
+    }
+
+    public function has($args)
+    {
+        // does the key or keys exist in data
+    }
+
+    public function flash()
+    {
+        // session storage
     }
 
     /**
-     * Required as implementation of IteratorAggregate.
-     *
-     * Allows iteration of instance.
+     * Exposes the info for debugging.
      *
      * @return array
      */
-    public function getIterator()
+    public function __debugInfo()
     {
-        return new \ArrayIterator($this->data);
+        return [
+            'method' => $this->method,
+            'uri'    => $this->fullUri,
+            'route'  => $this->route
+        ];
     }
 }

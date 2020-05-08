@@ -2,7 +2,6 @@
 
 use Express\Express;
 use Express\Http\Request;
-use Express\Handlers\ClosureBuilder;
 
 define('__BASEDIR__', __DIR__ . '/..');
 define('__VIEWDIR__', __DIR__ . '/../resources/views');

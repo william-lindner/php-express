@@ -1,5 +1,6 @@
+;dev | prod
 [server]
-environment=dev ;dev | prod
+environment=dev
 display_errors=0
 error_reporting=E_STRICT
 timezone=America/Chicago
@@ -15,10 +16,10 @@ charset=UTF8
 
 ;http://php.net/manual/en/session.configuration.php
 [session]
-name=my-session
-max_lifetime=0
+name=express
+max_lifetime=3600
 http_only=true
-ssl_require=true
+ssl_require=false
 use_only_cookies=true
 path=/
 domain=

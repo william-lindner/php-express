@@ -5,8 +5,7 @@
   "license": "MIT",
   "authors": [
     {
-      "name": "william-lindner",
-      "email": "lindner.will@gmail.com"
+      "name": "William Lindner"
     }
   ],
   "autoload": {
@@ -23,5 +22,6 @@
       "@php -r \"file_exists('.ini') || copy('.ini.example', '.ini');\""
     ]
   },
-  "require": {}
+  "require": {
+  }
 }

@@ -1,26 +1,28 @@
 <?php
 
-use Express\Configuration;
-
-/**
- * Loads the configuration option based on an identifier passed.
- *
- * @param string
- * @return mixed
- */
-function config(string $identifier, $default = null)
-{
-    return strtolower(Configuration::get($identifier) ?: $default);
+if (!function_exists('config')) {
+    /**
+     * Loads the configuration option based on an identifier passed.
+     *
+     * @param string $identifier
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    function config(string $identifier, $default = null)
+    {
+        return \Express\Configuration::get($identifier, $default);
+    }
 }
 
-/**
- * Access information about the user of the site.
- *
- */
-function user(string $key = null)
-{
-    if (!$key) {
-        return $_SESSION['user'];
+if (!function_exists('user')) {
+    /**
+     * Access information about the user of the site.
+     *
+     * @return mixed|null
+     */
+    function user()
+    {
+        return \Express\Container::retrieve('visitor');
     }
-    return $_SESSION['user'][$key] ?? null;
 }

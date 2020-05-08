@@ -2,86 +2,62 @@
 
 namespace Express;
 
-final class Visitor
+class Visitor
 {
     /**
-     * Stores information about the visitor, including guest status, etc.
-     */
-    protected $information = [
-        'guest' => true,
-    ];
-
-    private static $instance = null;
-
-    /**
      * Builds the visitor data array with supplied data or blank data
+     *
      */
-    public function __construct(array $data = [])
+    public function __construct()
     {
-        if (self::$instance) {
-            return self::$instance;
+        if (Session::get('user') === null) {
+            Session::set('user', Configuration::load('user'));
         }
-
-        $this->information += $data;
-        return self::$instance = $this;
     }
 
     /**
+     * Sets the user data in session to the new array, maintaining
+     * original data structure.
      *
+     * @param array $data
      *
      * @return void
      */
-    public function identify(array $data = [])
+    public function set(array $data = []) : void
     {
-        $_SESSION['user'] = $_SESSION['user'] ?? [];
-
-        $defaults = Configuration::load('user');
-
-        array_walk($defaults, function ($attribute, $key) use ($data) {
-            $_SESSION['user'][$key] = $data[$key] ?? $attribute;
-        });
-
-        $this->mergeData($_SESSION['user']);
-    }
-
-    /**
-     * Finds the role of the visitor
-     *
-     * @return string
-     */
-    public function role()
-    {
-        return $this->information['role'] ?? 'guest';
-    }
-
-    /**
-     * Merges and overrides the data that is currently existing on the data structure
-     */
-    public function mergeData(array $data = [])
-    {
-        if (empty($this->information)) {
-            $this->information = $data;
+        if ($data === []) {
             return;
         }
 
-        foreach ($data as $key => $attribute) {
-            $this->information[$key] = $_SESSION['user'][$key] = $attribute;
+        Session::set('user', array_merge(Session::get('user'), $data));
+    }
+
+    /**
+     * Find the dot pattern within the user array
+     *
+     * @param string $pattern
+     *
+     * @return mixed
+     */
+    public function get(?string $pattern = null)
+    {
+        if ($pattern === null) {
+            return Session::get('user');
         }
-    }
 
-    /**
-     * Opens access to the Visitor data
-     */
-    public function __invoke($key)
-    {
-        return $this->information[$key] ?? null;
-    }
+        $user = Session::get('user');
 
-    /**
-     * Getter for the Visitor data array
-     */
-    public function __get($key)
-    {
-        return $this->information[$key] ?? null;
+        $jumps = explode('.', $pattern);
+        $hay = &$user;
+
+        foreach ($jumps as $jump) {
+            if (!isset($hay[$jump])) {
+                return null;
+            }
+
+            $hay = $user[$jump];
+        }
+
+        return $hay;
     }
 }

@@ -18,16 +18,17 @@ class Exception
      *
      * @return void
      */
-    public static function register()
+    public static function register() : void
     {
-        set_exception_handler(['\\Express\\Handlers\\Exception', 'handler']);
+        set_exception_handler([__CLASS__, 'handler']);
     }
 
     /**
      * Handles exceptions in a quiet way for the framework.
+     *
      * @return void
      */
-    public static function handler($e)
+    public static function handler($e) : void
     {
         if (config('server.environment', 'prod') !== 'prod') {
             $code    = $e->getCode ?? 500;
