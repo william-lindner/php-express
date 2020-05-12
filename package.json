@@ -23,12 +23,12 @@
   },
   "homepage": "https://github.com/william-lindner/Express#readme",
   "dependencies": {
-    "cross-env": "^5.2.1",
-    "laravel-mix": "^4.1.4",
-    "vue": "^2.6.10"
+    "vue": "^2.6.11"
   },
   "devDependencies": {
-    "sass": "^1.23.7",
+    "cross-env": "^5.2.1",
+    "laravel-mix": "^4.1.4",
+    "sass": "^1.26.5",
     "sass-loader": "^7.3.1"
   }
 }
