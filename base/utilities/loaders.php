@@ -15,7 +15,11 @@ if (!function_exists('view')) {
      */
     function view(string $file, array $data = [])
     {
-        return (new View($data))->render($file);
+        if (!$view = \Express\Container::retrieve('view')) {
+            $view = new View();
+        }
+
+        return $view->render($file);
     }
 }
 
