@@ -20,7 +20,7 @@ class Container
      * @var array
      */
     private static $contents = [];
-    
+
     private function __construct()
     {
         //
@@ -31,12 +31,16 @@ class Container
      *
      * @param string $key
      * @param mixed  $value
+     *
+     * @return mixed
      */
-    public static function store(string $key, $value) : void
+    public static function store(string $key, $value)
     {
         if (!isset(self::$contents[$key])) {
             self::$contents[$key] = $value;
         }
+
+        return self::$contents[$key];
     }
 
     /**

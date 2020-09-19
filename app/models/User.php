@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Express\Model;
+use Express\Abstractions\Model;
 
 class User extends Model
 {

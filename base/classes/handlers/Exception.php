@@ -26,17 +26,22 @@ class Exception
     /**
      * Handles exceptions in a quiet way for the framework.
      *
+     * @param $e
+     *
      * @return void
      */
     public static function handler($e) : void
     {
+        $code = $e->getCode ?? 500;
+
         if (config('server.environment', 'prod') !== 'prod') {
-            $code    = $e->getCode ?? 500;
             $message = $e->getMessage() ?? 'Unknown';
-            dd([
-                'Exception' => "[{$code}] {$message}",
-                'Trace'     => debug_backtrace()[0]['args'],
-            ]);
+            dd(
+                [
+                    'Exception' => "[{$code}] {$message}",
+                    'Trace'     => debug_backtrace()[0]['args'],
+                ]
+            );
         }
 
         // send a 400 by default

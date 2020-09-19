@@ -2,29 +2,39 @@
 
 namespace Express\Abstractions;
 
+use Express\Container;
+use Express\Http\Response;
+
 abstract class Controller
 {
-    protected function httpError(?string $reason = null, int $code = 400)
-    {
-        $protocol = $_SERVER['SERVER_PROTOCOL'] ?? 'HTTP/1.1';
-        $reason = (string) $reason ?: 'Unknown Error';
 
-        ob_clean();
-        header("$protocol $code $reason", true, $code);
-        http_response_code($code);
+    /**
+     * @var Response
+     */
+    private $response;
+
+    public function __construct()
+    {
+        if (!Container::retrieve('response')) {
+            Container::store('response', new Response());
+        }
     }
 
     /**
-     * Allows for JSON object echo within APIs
+     * Redirects to a uri pattern (for internal use relative)
      *
-     * @param $contents
-     *
-     * @return false|string
+     * @param string uri
      */
-    protected function jsonify($contents)
+    protected function redirect(string $uri) : void
     {
-        ob_clean();
-        header('Content-Type: application/json;charset=utf-8');
-        return json_encode($contents);
+        // todo : implement redirect system
+    }
+
+    /**
+     * @return Response
+     */
+    protected function response() : Response
+    {
+        return Container::retrieve('response');
     }
 }
